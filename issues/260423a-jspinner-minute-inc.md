@@ -4,7 +4,7 @@
 | Metadata | Information |
 |---------|-------|
 | **Objective** | To illustrate how to diagnose and troubleshoot a platform- and Look & Feel–specific issue in the Java Swing JSpinner component. |
-| **References**[^fn1] | OpenJDK Bug Report [JDK-4893544](https://bugs.openjdk.org/browse/JDK-4893544) \| Oracle Docs [SpinnerDateModel](https://docs.oracle.com/javase/8/docs/api/javax/swing/SpinnerDateModel.html) \| Stack Overflow [Question 5598639](https://stackoverflow.com/questions/5598639/java-lookandfeels-that-work-with-spinnerdatemodel), [Question 38484729](https://stackoverflow.com/questions/38484729/jspinner-default-changes-years-instead-of-days) |
+| **References**[^fn1] | OpenJDK Bug Report [JDK-4893544](https://bugs.openjdk.org/browse/JDK-4893544) \| Stack Overflow [Question 5598639](https://stackoverflow.com/questions/5598639/java-lookandfeels-that-work-with-spinnerdatemodel), [Question 38484729](https://stackoverflow.com/questions/38484729/jspinner-default-changes-years-instead-of-days) \| Oracle Docs [SpinnerDateModel](https://docs.oracle.com/javase/8/docs/api/javax/swing/SpinnerDateModel.html) |
 | **Date** | 2026-04-23 Initial publication |
 
 [^fn1]: Prompt: "what are currently the most authoritative sources on this issue?" + article source
