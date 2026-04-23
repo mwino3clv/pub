@@ -1,3 +1,3 @@
-# Meine GitHub Page
+# The End
 
-Das ist eine GitHub Pages Seite mit Markdown.
+of the [web](https://web.archive.org/).
