@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Das DAO-Pattern – N-Tier, SOLID und DAO</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./05_dao-varianten.html" rel="next">
+<link href="./03_solid.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d9ea66fcd6c317012447f26e9c021348.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04_dao-pattern.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Das DAO-Pattern</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">N-Tier, SOLID und DAO</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">N-Tier, SOLID und DAO</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_motivation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Warum Programme Struktur brauchen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_n-tier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">N-Tier-Architektur</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_solid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">SOLID-Prinzipien</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_dao-pattern.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Das DAO-Pattern</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_dao-varianten.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">DAO-Varianten im Detail</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_uebungen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Übungen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A1_grundlagen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Java-Grundlagen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A2_glossar.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossar</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A3_quellen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quellen / Weiterführendes</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-dao-problem" id="toc-sec-dao-problem" class="nav-link active" data-scroll-target="#sec-dao-problem"><span class="header-section-number">5.1</span> Das Problem: direkte Kopplung</a></li>
+  <li><a href="#sec-dao-loesung" id="toc-sec-dao-loesung" class="nav-link" data-scroll-target="#sec-dao-loesung"><span class="header-section-number">5.2</span> Die Lösung: DAO mit Interface</a></li>
+  <li><a href="#sec-dao-interface" id="toc-sec-dao-interface" class="nav-link" data-scroll-target="#sec-dao-interface"><span class="header-section-number">5.3</span> Das Interface im Detail</a></li>
+  <li><a href="#sec-dao-di" id="toc-sec-dao-di" class="nav-link" data-scroll-target="#sec-dao-di"><span class="header-section-number">5.4</span> Dependency Injection — wer entscheidet?</a></li>
+  <li><a href="#sec-dao-varianten-ueberblick" id="toc-sec-dao-varianten-ueberblick" class="nav-link" data-scroll-target="#sec-dao-varianten-ueberblick"><span class="header-section-number">5.5</span> Die drei Varianten im Vergleich</a></li>
+  <li><a href="#sec-dao-inmemory-ueberblick" id="toc-sec-dao-inmemory-ueberblick" class="nav-link" data-scroll-target="#sec-dao-inmemory-ueberblick"><span class="header-section-number">5.6</span> Variante 1: InMemoryProductDao</a></li>
+  <li><a href="#sec-dao-textfile-ueberblick" id="toc-sec-dao-textfile-ueberblick" class="nav-link" data-scroll-target="#sec-dao-textfile-ueberblick"><span class="header-section-number">5.7</span> Variante 2: TextFileProductDao</a></li>
+  <li><a href="#sec-dao-mariadb-ueberblick" id="toc-sec-dao-mariadb-ueberblick" class="nav-link" data-scroll-target="#sec-dao-mariadb-ueberblick"><span class="header-section-number">5.8</span> Variante 3: MariaDbProductDao</a></li>
+  <li><a href="#sec-dao-zusammenfassung" id="toc-sec-dao-zusammenfassung" class="nav-link" data-scroll-target="#sec-dao-zusammenfassung"><span class="header-section-number">5.9</span> Zusammenfassung</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-dao" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Das DAO-Pattern</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lernziele
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nach diesem Kapitel kannst du …</p>
+<ul>
+<li>erklären, was das DAO-Pattern ist und welches Problem es löst,</li>
+<li>ein <code>ProductDao</code>-Interface mit den vier Standardmethoden schreiben,</li>
+<li>den Unterschied zwischen Interface und Implementierung beschreiben,</li>
+<li>erklären, warum <code>ProductService</code> vom Interface abhängt und nicht von einer konkreten Klasse,</li>
+<li>die drei DAO-Varianten (In-Memory, Textdatei, MariaDB) nach Einsatzzweck unterscheiden.</li>
+</ul>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+<section id="sec-dao-problem" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-dao-problem"><span class="header-section-number">5.1</span> Das Problem: direkte Kopplung</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="5" data-fig-height="3" data-out-width="70%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    S["ProductService"]
+    D["MariaDbProductDao&lt;br/&gt;(konkrete Klasse)"]
+    DB[("Datenbank")]
+
+    S --&gt;|"direkte Abhängigkeit"| D
+    D --&gt;|"liest / schreibt"| DB
+</pre>
+</div>
+<p></p><figcaption> Ohne DAO: Business Logic greift direkt auf die Datenquelle zu.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Stell dir vor, <code>ProductService</code> enthält direkt den Code für den Datenbankzugriff. Was passiert, wenn du statt einer Datenbank plötzlich eine Textdatei nutzen willst?</p>
+<p>Du musst <code>ProductService</code> öffnen und umschreiben. Und wenn danach etwas mit der Anzeige nicht stimmt? Dann ist nicht klar, ob der Fehler in der Logik oder im Datenzugriff steckt.</p>
+<p>Das ist das Kernproblem: <strong>Business-Logik und Datenzugriff vermischen sich.</strong> Eine Änderung an der Datenquelle zieht Änderungen an der Logik nach sich.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Schlechtes Beispiel: direkter Zugriff ohne Abstraktionsebene</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ProductService <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> MariaDbProductDao dao <span class="op">=</span> <span class="kw">new</span> <span class="fu">MariaDbProductDao</span><span class="op">();</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">getAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> dao<span class="op">.</span><span class="fu">findAll</span><span class="op">();</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ProductService</code> ist jetzt fest mit <code>MariaDbProductDao</code> verbunden. Ein Austausch der Datenquelle ist ohne Codeänderung unmöglich. Das verletzt das Dependency Inversion Principle (→ <span class="quarto-unresolved-ref">?sec-dip</span>).</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-loesung" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-dao-loesung"><span class="header-section-number">5.2</span> Die Lösung: DAO mit Interface</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="6" data-fig-height="4" data-out-width="80%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">classDiagram
+    class ProductService {
+        -ProductDao dao
+        +getAll() List~Product~
+        +addProduct(Product p) void
+    }
+
+    class ProductDao {
+        &lt;&lt;interface&gt;&gt;
+        +findAll() List~Product~
+        +findById(int id) Product
+        +save(Product product) void
+        +deleteById(int id) void
+    }
+
+    class InMemoryProductDao
+    class TextFileProductDao
+    class MariaDbProductDao
+
+    ProductService --&gt; ProductDao : hängt ab von
+    ProductDao &lt;|-- InMemoryProductDao : implements
+    ProductDao &lt;|-- TextFileProductDao : implements
+    ProductDao &lt;|-- MariaDbProductDao  : implements
+</pre>
+</div>
+<p></p><figcaption> Mit DAO: ProductService hängt nur vom Interface ab. Die konkrete Implementierung ist austauschbar.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>DAO</strong> steht für <em>Data Access Object</em> — Datenzugriffsobjekt. Das Muster trennt den Datenzugriff sauber vom Rest des Programms.</p>
+<p>Die Grundidee: Ein <strong>Interface</strong> legt fest, welche Operationen möglich sind. Konkrete Klassen — die Implementierungen — bestimmen, <em>wie</em> diese Operationen ausgeführt werden. <code>ProductService</code> kennt nur das Interface. Welche Implementierung dahintersteckt, ist für den Service irrelevant.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Das Interface — der "Vertrag"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">interface</span> ProductDao <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">();</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    Product <span class="fu">findById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">);</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">);</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">deleteById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">);</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Ein <strong>Interface</strong> in Java ist eine Schnittstelle: Es definiert Methoden, aber enthält keinen Ausführungscode. Jede Klasse, die das Interface implementiert, muss alle vier Methoden bereitstellen. Das Interface ist der Vertrag — jede Implementierung muss ihn einhalten.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ProductService hängt vom Interface ab — nicht von einer konkreten Klasse</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ProductService <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> ProductDao dao<span class="op">;</span>  <span class="co">// Interface-Typ, kein konkreter Typ</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">ProductService</span><span class="op">(</span>ProductDao dao<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">dao</span> <span class="op">=</span> dao<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">getAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> dao<span class="op">.</span><span class="fu">findAll</span><span class="op">();</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">addProduct</span><span class="op">(</span>Product product<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        dao<span class="op">.</span><span class="fu">save</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ProductService</code> weiß nicht, ob <code>dao</code> Daten aus dem Arbeitsspeicher, einer Datei oder einer Datenbank liest. Diese Entscheidung trifft der Code, der <code>ProductService</code> erzeugt — und das ist genau so gewollt.</p>
+<blockquote class="blockquote">
+<p><strong>Merksatz:</strong> Der Service weiß nicht, wie Daten gespeichert sind. Das ist Absicht.</p>
+</blockquote>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-interface" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-dao-interface"><span class="header-section-number">5.3</span> Das Interface im Detail</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="6" data-fig-height="5" data-out-width="80%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">classDiagram
+    class ProductDao {
+        &lt;&lt;interface&gt;&gt;
+        +findAll() List~Product~
+        +findById(int id) Product
+        +save(Product product) void
+        +deleteById(int id) void
+    }
+
+    class InMemoryProductDao {
+        +findAll() List~Product~
+        +findById(int id) Product
+        +save(Product product) void
+        +deleteById(int id) void
+    }
+
+    class TextFileProductDao {
+        +findAll() List~Product~
+        +findById(int id) Product
+        +save(Product product) void
+        +deleteById(int id) void
+    }
+
+    class MariaDbProductDao {
+        +findAll() List~Product~
+        +findById(int id) Product
+        +save(Product product) void
+        +deleteById(int id) void
+    }
+
+    ProductDao &lt;|-- InMemoryProductDao : implements
+    ProductDao &lt;|-- TextFileProductDao : implements
+    ProductDao &lt;|-- MariaDbProductDao  : implements
+</pre>
+</div>
+<p></p><figcaption> ProductDao-Interface mit allen vier Methoden und den drei Implementierungsklassen.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Das <code>ProductDao</code>-Interface enthält genau vier Methoden. Diese vier decken alle grundlegenden Datenzugriffsoperationen ab — bekannt unter dem Kürzel <strong>CRUD</strong>: <em>Create</em> (Erstellen), <em>Read</em> (Lesen), <em>Update/Save</em> (Speichern), <em>Delete</em> (Löschen).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Methode</th>
+<th>Aufgabe</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>findAll()</code></td>
+<td>Alle Produkte als Liste zurückgeben</td>
+</tr>
+<tr class="even">
+<td><code>findById(int id)</code></td>
+<td>Ein einzelnes Produkt anhand der ID suchen</td>
+</tr>
+<tr class="odd">
+<td><code>save(Product p)</code></td>
+<td>Ein Produkt speichern (neu anlegen oder aktualisieren)</td>
+</tr>
+<tr class="even">
+<td><code>deleteById(int id)</code></td>
+<td>Ein Produkt anhand der ID löschen</td>
+</tr>
+</tbody>
+</table>
+<p>Das Interface enthält bewusst nur diese vier Methoden — nicht mehr. Das hält es schlank und klar (→ Interface Segregation Principle, <span class="quarto-unresolved-ref">?sec-isp</span>).</p>
+<p>Jede der drei Implementierungsklassen muss alle vier Methoden bereitstellen. Das garantiert, dass sie überall einsetzbar sind, wo <code>ProductDao</code> erwartet wird (→ Liskov Substitution Principle, <span class="quarto-unresolved-ref">?sec-lsp</span>).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Implementierung für den Arbeitsspeicher</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> InMemoryProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> products<span class="op">;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Product <span class="fu">findById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>Product p <span class="op">:</span> products<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>p<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">==</span> id<span class="op">)</span> <span class="cf">return</span> p<span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        products<span class="op">.</span><span class="fu">add</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">deleteById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        products<span class="op">.</span><span class="fu">removeIf</span><span class="op">(</span>p <span class="op">-&gt;</span> p<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">==</span> id<span class="op">);</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Das Schlüsselwort <code>implements</code> zeigt an, dass eine Klasse ein Interface umsetzt. Die Annotation <code>@Override</code> macht deutlich, dass die Methode aus dem Interface stammt. Fehlt eine der vier Methoden, gibt Java einen Compilerfehler — der Vertrag muss vollständig erfüllt sein.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-di" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="sec-dao-di"><span class="header-section-number">5.4</span> Dependency Injection — wer entscheidet?</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="5" data-fig-height="3" data-out-width="70%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant M as main()
+    participant D as InMemoryProductDao
+    participant S as ProductService
+
+    M-&gt;&gt;D: new InMemoryProductDao()
+    M-&gt;&gt;S: new ProductService(dao)
+    S--&gt;&gt;M: bereit
+</pre>
+</div>
+<p></p><figcaption> Dependency Injection: Die konkrete Implementierung wird von außen übergeben.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Wer legt fest, welche Implementierung tatsächlich verwendet wird? Diese Entscheidung trifft der Code, der alles zusammenbaut — typischerweise die <code>main</code>-Methode.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// main-Methode: hier wird die konkrete Implementierung gewählt</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Main <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        ProductDao dao <span class="op">=</span> <span class="kw">new</span> <span class="fu">InMemoryProductDao</span><span class="op">();</span>   <span class="co">// Entscheidung hier</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        ProductService service <span class="op">=</span> <span class="kw">new</span> <span class="fu">ProductService</span><span class="op">(</span>dao<span class="op">);</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        ProductView view <span class="op">=</span> <span class="kw">new</span> <span class="fu">ProductView</span><span class="op">(</span>service<span class="op">);</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        view<span class="op">.</span><span class="fu">showAllProducts</span><span class="op">();</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Die Implementierung wird als Parameter übergeben — das nennt sich <strong>Dependency Injection</strong> (Abhängigkeitsinjektion). <code>ProductService</code> erhält sein <code>dao</code>-Objekt von außen, statt es selbst zu erzeugen.</p>
+<p>Das hat einen großen Vorteil: Um die Datenquelle zu wechseln, ändert man nur eine einzige Zeile.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Wechsel zur Datenbankimplementierung — nur diese Zeile ändert sich:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ProductDao dao <span class="op">=</span> <span class="kw">new</span> <span class="fu">MariaDbProductDao</span><span class="op">();</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">// ProductService und ProductView bleiben vollständig unverändert</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>ProductService</code> und <code>ProductView</code> merken nichts von diesem Wechsel. Sie arbeiten weiterhin mit dem Interface — egal was dahintersteckt.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-varianten-ueberblick" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="sec-dao-varianten-ueberblick"><span class="header-section-number">5.5</span> Die drei Varianten im Vergleich</h2>
+<p>Das Interface <code>ProductDao</code> kann auf drei Arten implementiert werden. Alle drei erfüllen denselben Vertrag — die vier Methoden. Sie unterscheiden sich nur darin, <em>wo</em> und <em>wie</em> Daten gespeichert werden.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Kriterium</th>
+<th><code>InMemoryProductDao</code></th>
+<th><code>TextFileProductDao</code></th>
+<th><code>MariaDbProductDao</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Datenquelle</td>
+<td>Arbeitsspeicher (ArrayList)</td>
+<td>Textdatei (CSV-Format)</td>
+<td>Relationale Datenbank</td>
+</tr>
+<tr class="even">
+<td>Persistenz</td>
+<td>Nein</td>
+<td>Ja</td>
+<td>Ja</td>
+</tr>
+<tr class="odd">
+<td>Einfachheit</td>
+<td>★★★</td>
+<td>★★</td>
+<td>★</td>
+</tr>
+<tr class="even">
+<td>Praxisnähe</td>
+<td>Gering</td>
+<td>Mittel</td>
+<td>Hoch</td>
+</tr>
+<tr class="odd">
+<td>Für erste Tests</td>
+<td>Ideal</td>
+<td>Gut</td>
+<td>Eher nicht</td>
+</tr>
+<tr class="even">
+<td>Externe Abhängigkeit</td>
+<td>Keine</td>
+<td>Keine</td>
+<td>MariaDB Connector/J</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Persistenz</strong> bedeutet: Daten bleiben erhalten, wenn das Programm beendet wird. <code>InMemoryProductDao</code> speichert Daten im Arbeitsspeicher — sie verschwinden beim Beenden. <code>TextFileProductDao</code> und <code>MariaDbProductDao</code> schreiben auf dauerhafte Speichermedien.</p>
+<p><strong>MariaDB Connector/J</strong> ist eine Bibliothek (JAR-Datei), die Java ermöglicht, mit einer MariaDB-Datenbank zu kommunizieren. <strong>JDBC</strong> (<em>Java Database Connectivity</em>) ist die Standard-Schnittstelle in Java für den Zugriff auf relationale Datenbanken.</p>
+<p>Die Details jeder Variante — vollständiger Code, Datenfluss, Fehlerbehandlung — folgen in <a href="05_dao-varianten.html" class="quarto-xref"><span>Chapter 6</span></a>.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-inmemory-ueberblick" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="sec-dao-inmemory-ueberblick"><span class="header-section-number">5.6</span> Variante 1: InMemoryProductDao</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    S["ProductService"]
+    I["ProductDao&lt;br/&gt;(Interface)"]
+    D["InMemoryProductDao"]
+    L["ArrayList&amp;lt;Product&amp;gt;"]
+
+    S --&gt;|"nutzt"| I
+    D -.-&gt;|"implementiert"| I
+    D --&gt;|"liest / schreibt"| L
+</pre>
+</div>
+<p></p><figcaption> InMemoryProductDao: Daten liegen in einer ArrayList im Arbeitsspeicher.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Daten werden in einer <code>ArrayList</code> im Arbeitsspeicher gehalten. Es gibt keine Datei, keine Datenbank, keine externe Abhängigkeit.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> InMemoryProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> products<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        products<span class="op">.</span><span class="fu">add</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// findById und deleteById analog aufgebaut</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Diese Variante eignet sich ideal für den Einstieg und für Tests. Alles läuft im Programm selbst — es braucht nichts weiter. Der Nachteil: Nach dem Programmende sind alle Daten weg.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-textfile-ueberblick" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="sec-dao-textfile-ueberblick"><span class="header-section-number">5.7</span> Variante 2: TextFileProductDao</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    S["ProductService"]
+    I["ProductDao&lt;br/&gt;(Interface)"]
+    D["TextFileProductDao"]
+    F["products.txt&lt;br/&gt;(CSV-Datei)"]
+
+    S --&gt;|"nutzt"| I
+    D -.-&gt;|"implementiert"| I
+    D --&gt;|"liest / schreibt"| F
+</pre>
+</div>
+<p></p><figcaption> TextFileProductDao: Daten werden als CSV-Datei auf dem Dateisystem gespeichert.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Daten werden als einfache Textdatei im CSV-Format gespeichert. <strong>CSV</strong> steht für <em>Comma-Separated Values</em> — hier wird Semikolon als Trennzeichen verwendet.</p>
+<pre class="text"><code>1;Laptop;999.99
+2;Maus;19.99
+3;Tastatur;49.90</code></pre>
+<p>Beim Lesen wird jede Zeile am Semikolon aufgeteilt und in ein <code>Product</code>-Objekt umgewandelt. Beim Schreiben wird jedes <code>Product</code>-Objekt in eine Textzeile umgewandelt und gespeichert.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TextFileProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> filename <span class="op">=</span> <span class="st">"products.txt"</span><span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> result <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Datei zeilenweise lesen</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Jede Zeile mit split(";") aufteilen</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Für jede Zeile ein Product-Objekt erzeugen</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result<span class="op">;</span>  <span class="co">// gekürztes Beispiel</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Produkt als Zeile an die Datei anhängen</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Format: id;name;price</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Die Daten bleiben auch nach dem Programmende erhalten — die Datei liegt auf dem Dateisystem. Die Details dieser Implementierung folgen in <a href="05_dao-varianten.html" class="quarto-xref"><span>Chapter 6</span></a>.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-mariadb-ueberblick" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="sec-dao-mariadb-ueberblick"><span class="header-section-number">5.8</span> Variante 3: MariaDbProductDao</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="5" data-fig-height="4" data-out-width="70%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    S["ProductService"]
+    I["ProductDao&lt;br/&gt;(Interface)"]
+    D["MariaDbProductDao"]
+    J["JDBC&lt;br/&gt;(Connector/J)"]
+    DB[("MariaDB&lt;br/&gt;Datenbank")]
+
+    S --&gt;|"nutzt"| I
+    D -.-&gt;|"implementiert"| I
+    D --&gt;|"SQL-Abfragen"| J
+    J --&gt;|"Verbindung"| DB
+</pre>
+</div>
+<p></p><figcaption> MariaDbProductDao: Daten werden über JDBC in einer relationalen Datenbank gespeichert.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Daten werden in einer relationalen Datenbank gespeichert. <strong>MariaDB</strong> ist ein freies Datenbanksystem, das SQL versteht. <strong>SQL</strong> (<em>Structured Query Language</em>) ist die Sprache, mit der Datenbanken abgefragt und verändert werden.</p>
+<p>Die Datenbanktabelle für unsere Produkte sieht so aus:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> product (</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">id</span>    <span class="dt">INT</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span> AUTO_INCREMENT,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    name  <span class="dt">VARCHAR</span>(<span class="dv">100</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    price <span class="dt">DOUBLE</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Der Java-Code greift über JDBC auf die Datenbank zu:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> MariaDbProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> result <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// JDBC: Verbindung zur Datenbank öffnen</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">// SQL-Abfrage ausführen: SELECT id, name, price FROM product</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Ergebnis (ResultSet) zeilenweise auslesen</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Für jede Zeile ein Product-Objekt erzeugen</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result<span class="op">;</span>  <span class="co">// gekürztes Beispiel</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Diese Variante ist die professionellste — aber auch die komplexeste. Sie benötigt eine laufende Datenbank und die MariaDB Connector/J-Bibliothek im Projekt. Die vollständige Implementierung folgt in <a href="05_dao-varianten.html" class="quarto-xref"><span>Chapter 6</span></a>.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-dao-zusammenfassung" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="sec-dao-zusammenfassung"><span class="header-section-number">5.9</span> Zusammenfassung</h2>
+<p>Das DAO-Pattern löst ein konkretes Problem: Es trennt den Datenzugriff sauber vom Rest des Programms.</p>
+<p>Das Herzstück ist das <strong>Interface</strong> <code>ProductDao</code>. Es definiert vier Methoden und legt damit fest, was jede Implementierung können muss. <code>ProductService</code> hängt nur von diesem Interface ab — nicht von einer konkreten Klasse.</p>
+<p>Die drei Implementierungen <code>InMemoryProductDao</code>, <code>TextFileProductDao</code> und <code>MariaDbProductDao</code> sind austauschbar. Ein Wechsel der Datenquelle erfordert keine Änderung an <code>ProductService</code> oder <code>ProductView</code>.</p>
+<p>Das Muster verbindet mehrere SOLID-Prinzipien direkt:</p>
+<ul>
+<li><strong>SRP</strong> (<span class="quarto-unresolved-ref">?sec-srp</span>): Datenzugriff ist Aufgabe der DAO-Klasse — nicht des Service.</li>
+<li><strong>OCP</strong> (<span class="quarto-unresolved-ref">?sec-ocp</span>): Neue Datenquelle → neue Klasse. Bestehender Code bleibt unberührt.</li>
+<li><strong>LSP</strong> (<span class="quarto-unresolved-ref">?sec-lsp</span>): Alle drei Implementierungen sind überall einsetzbar, wo <code>ProductDao</code> erwartet wird.</li>
+<li><strong>ISP</strong> (<span class="quarto-unresolved-ref">?sec-isp</span>): Das Interface enthält nur vier notwendige Methoden — nicht mehr.</li>
+<li><strong>DIP</strong> (<span class="quarto-unresolved-ref">?sec-dip</span>): <code>ProductService</code> hängt vom Interface ab, nicht von <code>MariaDbProductDao</code>.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Merksatz:</strong> Das DAO-Pattern kapselt den gesamten Datenzugriff hinter einem Interface. Der Service weiß nicht, wie Daten gespeichert sind — und das ist genau richtig so.</p>
+</blockquote>
+<hr>
+<p><em>Quellen dieses Kapitels:</em></p>
+<ul>
+<li><em>DAO Pattern in Java — Baeldung:</em> <a href="https://www.baeldung.com/java-dao-pattern" class="uri">https://www.baeldung.com/java-dao-pattern</a></li>
+<li><em>Java Interfaces — Oracle Tutorials:</em> <a href="https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html" class="uri">https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html</a></li>
+<li><em>Oracle Java SE 21 Dokumentation:</em> <a href="https://docs.oracle.com/en/java/javase/21/" class="uri">https://docs.oracle.com/en/java/javase/21/</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03_solid.html" class="pagination-link" aria-label="SOLID-Prinzipien">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">SOLID-Prinzipien</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./05_dao-varianten.html" class="pagination-link" aria-label="DAO-Varianten im Detail">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">DAO-Varianten im Detail</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

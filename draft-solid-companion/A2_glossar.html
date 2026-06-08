@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Appendix B — Glossar – N-Tier, SOLID und DAO</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./A3_quellen.html" rel="next">
+<link href="./A1_grundlagen.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d9ea66fcd6c317012447f26e9c021348.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./A1_grundlagen.html">Appendices</a></li><li class="breadcrumb-item"><a href="./A2_glossar.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossar</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">N-Tier, SOLID und DAO</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">N-Tier, SOLID und DAO</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_motivation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Warum Programme Struktur brauchen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_n-tier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">N-Tier-Architektur</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_solid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">SOLID-Prinzipien</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_dao-pattern.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Das DAO-Pattern</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_dao-varianten.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">DAO-Varianten im Detail</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_uebungen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Übungen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A1_grundlagen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Java-Grundlagen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A2_glossar.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossar</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A3_quellen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quellen / Weiterführendes</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./A1_grundlagen.html">Appendices</a></li><li class="breadcrumb-item"><a href="./A2_glossar.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossar</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Appendix B — Glossar</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Hinweis">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dieses Glossar erklärt alle Fachbegriffe, die im Begleitheft verwendet werden. Die Einträge sind alphabetisch sortiert. Beim Lesen eines Kapitels kann hier jederzeit nachgeschlagen werden.</p>
+</div>
+</div>
+<hr>
+<p><strong><code>@Override</code>.</strong> Eine Java-Annotation, die kennzeichnet, dass eine Methode aus einem Interface oder einer Elternklasse implementiert wird. Ist der Methodenname falsch geschrieben, meldet der Compiler sofort einen Fehler.</p>
+<p><strong>Abhängigkeit</strong> (<em>dependency</em>). Eine Klasse hängt von einer anderen ab, wenn sie deren Typ kennt und verwendet. Abhängigkeiten von konkreten Klassen machen Code schwer änderbar; Abhängigkeiten von Interfaces sind flexibler.</p>
+<p><strong><code>ArrayList</code>.</strong> Eine Implementierung des <code>List</code>-Interface in Java. Sie speichert Objekte in dynamisch wachsender Reihenfolge im Arbeitsspeicher und ist die am häufigsten verwendete Listenvariante.</p>
+<p><strong>Attribut.</strong> Eine Variable, die den Zustand eines Objekts beschreibt und innerhalb einer Klasse deklariert ist. Attribute sind typischerweise <code>private</code> und werden über Getter und Setter zugänglich gemacht.</p>
+<hr>
+<p><strong>Backend.</strong> Die unterste Schicht in einer N-Tier-Architektur; zuständig für den Datenzugriff. Im Begleitheft übernimmt <code>ProductDao</code> (bzw. seine Implementierungen) diese Rolle.</p>
+<p><strong><code>BufferedReader</code> / <code>BufferedWriter</code>.</strong> Java-Klassen aus dem Paket <code>java.io</code> zum zeilenweisen Lesen und Schreiben von Textdateien. Sie puffern Daten im Arbeitsspeicher, um viele einzelne Dateizugriffe zu vermeiden.</p>
+<p><strong>Business Logic</strong> (<em>Geschäftslogik</em>). Die mittlere Schicht in einer N-Tier-Architektur; enthält die Regeln und Verarbeitungslogik des Programms. Im Begleitheft entspricht das der Klasse <code>ProductService</code>.</p>
+<hr>
+<p><strong><code>Connection</code>.</strong> Eine JDBC-Klasse, die eine offene Verbindung zu einer Datenbank repräsentiert. Sie wird mit <code>DriverManager.getConnection(url, user, password)</code> geöffnet und nach Verwendung geschlossen.</p>
+<p><strong>CRUD.</strong> Akronym für die vier grundlegenden Datenzugriffsoperationen: <em>Create</em> (Erstellen), <em>Read</em> (Lesen), <em>Update</em> (Aktualisieren), <em>Delete</em> (Löschen). Das <code>ProductDao</code>-Interface deckt diese vier Operationen ab.</p>
+<p><strong>CSV</strong> (<em>Comma-Separated Values</em>). Ein einfaches Textformat, bei dem Felder durch ein Trennzeichen getrennt sind. <code>TextFileProductDao</code> speichert Produkte im Format <code>id;name;price</code>, wobei Semikolon als Trennzeichen dient.</p>
+<hr>
+<p><strong>DAO</strong> (<em>Data Access Object</em> — Datenzugriffsobjekt). Ein Entwurfsmuster, das den gesamten Datenzugriff in einer eigenen Klasse kapselt. Der Rest des Programms kommuniziert nur mit dem Interface, nicht mit der konkreten Implementierung.</p>
+<p><strong>Dependency Injection</strong> (<em>Abhängigkeitsinjektion</em>). Ein Entwurfsmuster, bei dem Abhängigkeiten einer Klasse von außen übergeben werden — zum Beispiel im Konstruktor — statt intern erzeugt zu werden. <code>ProductService</code> erhält sein <code>dao</code>-Objekt per Dependency Injection.</p>
+<p><strong>DIP</strong> (<em>Dependency Inversion Principle</em> — Abhängigkeitsumkehrprinzip). Das fünfte SOLID-Prinzip: Klassen sollen von Abstraktionen (Interfaces) abhängen, nicht von konkreten Implementierungen. Es erklärt, warum <code>ProductService</code> vom Interface <code>ProductDao</code> abhängt — und nicht von <code>MariaDbProductDao</code>.</p>
+<hr>
+<p><strong>Frontend</strong> (<em>Präsentationsschicht</em>). Die oberste Schicht in einer N-Tier-Architektur; zuständig für Anzeige und Eingabe. Im Begleitheft übernimmt <code>ProductView</code> diese Rolle.</p>
+<hr>
+<p><strong>Getter / Setter.</strong> Methoden, die den kontrollierten Lese- und Schreibzugriff auf <code>private</code> Attribute ermöglichen. Ein Getter gibt den Wert zurück (<code>getName()</code>), ein Setter setzt ihn (<code>setName(String name)</code>).</p>
+<hr>
+<p><strong>Implementierung.</strong> Eine konkrete Klasse, die ein Interface umsetzt. <code>InMemoryProductDao</code>, <code>TextFileProductDao</code> und <code>MariaDbProductDao</code> sind Implementierungen des Interface <code>ProductDao</code>.</p>
+<p><strong><code>InMemoryProductDao</code>.</strong> Die einfachste DAO-Implementierung im Begleitheft. Sie speichert Produkte in einer <code>ArrayList</code> im Arbeitsspeicher — ohne Datei und ohne Datenbank. Daten gehen beim Programmende verloren.</p>
+<p><strong>In-Memory.</strong> Wörtlich „im Speicher” — bezeichnet Datenspeicherung, die ausschließlich im Arbeitsspeicher (RAM) stattfindet. Diese Variante eignet sich ideal für Tests und erste Implementierungen, bietet aber keine Persistenz.</p>
+<p><strong>Interface</strong> (<em>Schnittstelle</em>). Eine Java-Konstruktion, die Methoden vorschreibt, ohne sie auszuprogrammieren. Es ist ein Vertrag: Jede implementierende Klasse muss alle Methoden bereitstellen.</p>
+<p><strong>ISP</strong> (<em>Interface Segregation Principle</em> — Schnittstellentrennungsprinzip). Das vierte SOLID-Prinzip: Viele kleine, spezifische Interfaces sind besser als ein großes, allgemeines. <code>ProductDao</code> enthält genau die vier Methoden, die alle Implementierungen tatsächlich brauchen — nicht mehr.</p>
+<hr>
+<p><strong>JDBC</strong> (<em>Java Database Connectivity</em>). Die Standard-API in Java für den Zugriff auf relationale Datenbanken. JDBC ist Teil von Java und stellt Klassen wie <code>Connection</code>, <code>PreparedStatement</code> und <code>ResultSet</code> bereit.</p>
+<hr>
+<p><strong>Kapselung</strong> (<em>Encapsulation</em>). Ein Grundprinzip der objektorientierten Programmierung: Attribute sind <code>private</code>, der Zugriff erfolgt nur über definierte Methoden. So bleibt das Objekt immer in einem gültigen Zustand.</p>
+<p><strong>Klasse.</strong> Ein Bauplan für Objekte in Java. Sie legt fest, welche Attribute (Daten) und Methoden (Verhalten) ein Objekt hat.</p>
+<p><strong>Konstruktor.</strong> Eine spezielle Methode, die beim Erstellen eines Objekts mit <code>new</code> automatisch aufgerufen wird. Seine Aufgabe ist es, die Startwerte der Attribute zu setzen.</p>
+<p><strong>Kopplung</strong> (<em>coupling</em>). Das Ausmaß, in dem Klassen voneinander abhängen. Starke Kopplung macht Änderungen riskant; schwache Kopplung — etwa durch Interfaces — macht Code wartbar und testbar.</p>
+<hr>
+<p><strong>Lambda-Ausdruck.</strong> Eine kurze Schreibweise für eine anonyme Funktion in Java (ab Java 8). Beispiel: <code>p -&gt; p.getId() == id</code> in <code>removeIf()</code> — übersetzt als: „für jedes <code>p</code> gilt: seine ID ist gleich <code>id</code>.”</p>
+<p><strong><code>List</code>.</strong> Ein Interface in Java für geordnete Listen. <code>ArrayList</code> ist die häufigste Implementierung. <code>List&lt;Product&gt;</code> ist eine typsichere Liste, die ausschließlich <code>Product</code>-Objekte enthält.</p>
+<p><strong>LSP</strong> (<em>Liskov Substitution Principle</em> — Liskovsches Substitutionsprinzip). Das dritte SOLID-Prinzip: Überall, wo ein Objekt eines Typs erwartet wird, muss ein Objekt eines Untertyps korrekt funktionieren. Alle DAO-Implementierungen müssen sich so verhalten, wie es das <code>ProductDao</code>- Interface verspricht — nicht nur syntaktisch, sondern inhaltlich.</p>
+<hr>
+<p><strong>MariaDB.</strong> Ein relationales, quelloffenes Datenbanksystem, das SQL versteht und mit MySQL kompatibel ist. Im Begleitheft wird MariaDB als Datenquelle für <code>MariaDbProductDao</code> verwendet.</p>
+<p><strong>MariaDB Connector/J.</strong> Eine JAR-Bibliothek, die JDBC für MariaDB umsetzt. Sie ermöglicht Java-Programmen die Kommunikation mit einer MariaDB-Datenbank. Ohne diese Datei im Projekt ist kein Datenbankzugriff möglich.</p>
+<p><strong><code>MariaDbProductDao</code>.</strong> Die professionellste DAO-Implementierung im Begleitheft. Sie kommuniziert über JDBC mit einer MariaDB-Datenbank und ist persistent sowie transaktionssicher.</p>
+<p><strong>Methode.</strong> Ein benannter Codeblock innerhalb einer Klasse, der eine Aktion ausführt oder einen Wert zurückgibt. Methoden beschreiben das Verhalten eines Objekts.</p>
+<hr>
+<p><strong>N-Tier-Architektur</strong> (<em>N-Schichten-Architektur</em>). Ein Architekturmuster, das ein Programm in übereinanderliegende Schichten (<em>Tiers</em> oder <em>Layers</em>) aufteilt. Jede Schicht hat genau eine Aufgabe und kommuniziert nur mit der direkt benachbarten Schicht. Bei drei Schichten spricht man von <strong>3-Tier</strong>.</p>
+<hr>
+<p><strong>Objekt.</strong> Eine konkrete Instanz einer Klasse, erzeugt mit <code>new</code>. Jedes Objekt hat seine eigenen Attributwerte und kann die Methoden der Klasse verwenden.</p>
+<p><strong>OCP</strong> (<em>Open/Closed Principle</em> — Offen-geschlossen-Prinzip). Das zweite SOLID-Prinzip: Eine Klasse soll offen für Erweiterung sein, aber geschlossen für Änderung. Neue Datenquellen werden als neue Klassen eingeführt — ohne bestehenden Code zu ändern.</p>
+<hr>
+<p><strong>Package.</strong> Eine Gruppierung von Java-Klassen, die inhaltlich zusammengehören. Der Package-Name entspricht dem Ordnernamen im Dateisystem und organisiert größere Projekte übersichtlich.</p>
+<p><strong>Persistenz.</strong> Die Eigenschaft, dass Daten auch nach dem Programmende erhalten bleiben. <code>TextFileProductDao</code> und <code>MariaDbProductDao</code> sind persistente Varianten; <code>InMemoryProductDao</code> ist es nicht.</p>
+<p><strong>POJO</strong> (<em>Plain Old Java Object</em>). Ein einfaches Java-Objekt ohne besondere Abhängigkeiten. Die Klasse <code>Product</code> ist ein POJO: Sie enthält nur Daten und Getter, aber keine Datenbankverbindungen, keine Dateioperationen und keine Anzeigelogik.</p>
+<p><strong>Polymorphismus.</strong> Die Eigenschaft, dass eine Variable vom Typ eines Interface jede beliebige Implementierung halten kann. Beispiel: <code>ProductDao dao = new InMemoryProductDao()</code> — die Variable <code>dao</code> hat den Typ des Interface, das Objekt dahinter ist eine konkrete Implementierung.</p>
+<p><strong><code>PreparedStatement</code>.</strong> Eine JDBC-Klasse zum sicheren Ausführen von SQL-Abfragen mit Platzhaltern (<code>?</code>). Sie verhindert SQL-Injection, indem Eingabewerte getrennt vom SQL-Text übergeben werden.</p>
+<p><strong><code>Product</code>.</strong> Die Domänenklasse im Begleitheft; repräsentiert ein Produkt mit den Feldern <code>id</code>, <code>name</code> und <code>price</code>. Sie ist ein POJO und enthält keine Datenzugriffs- oder Anzeigelogik.</p>
+<p><strong><code>ProductDao</code>.</strong> Das Interface, das die vier Datenzugriffsmethoden vorschreibt: <code>findAll()</code>, <code>findById(int id)</code>, <code>save(Product p)</code>, <code>deleteById(int id)</code>. Es ist der Vertrag, den alle DAO-Implementierungen erfüllen müssen.</p>
+<p><strong><code>ProductService</code>.</strong> Die Klasse der Business-Logic-Schicht. Sie prüft Eingaben, koordiniert Abläufe und delegiert den Datenzugriff an <code>ProductDao</code> — ohne zu wissen, welche Implementierung dahintersteckt.</p>
+<p><strong><code>ProductView</code>.</strong> Die Klasse der Präsentationsschicht. Sie zeigt Produkte an und nimmt Eingaben entgegen; enthält keine Datenzugriffs- oder Verarbeitungslogik.</p>
+<hr>
+<p><strong>Refactoring.</strong> Das Umstrukturieren von Code, ohne sein äußeres Verhalten zu ändern. Ziel ist eine klarere Trennung der Verantwortlichkeiten und damit bessere Wartbarkeit.</p>
+<p><strong>Relationale Datenbank.</strong> Ein Datenbanksystem, das Daten in Tabellen speichert. Tabellen bestehen aus Zeilen (einzelnen Datensätzen) und Spalten (Datenfeldern) und können über gemeinsame Felder verknüpft werden.</p>
+<p><strong><code>ResultSet</code>.</strong> Eine JDBC-Klasse, die das Ergebnis einer <code>SELECT</code>-Abfrage enthält. Das <code>ResultSet</code> wird zeilenweise mit <code>rs.next()</code> durchlaufen; Spaltenwerte werden mit <code>rs.getInt()</code>, <code>rs.getString()</code> usw. ausgelesen.</p>
+<hr>
+<p><strong>Schicht</strong> (<em>tier</em>, <em>layer</em>). Eine Gruppe von Klassen mit einer gemeinsamen Aufgabe in einer N-Tier-Architektur. Im Begleitheft gibt es drei Schichten: Frontend, Business Logic und Backend.</p>
+<p><strong>Separation of Concerns</strong> (<em>Trennung der Zuständigkeiten</em>). Das Prinzip, jede Klasse für genau eine klar abgegrenzte Aufgabe verantwortlich zu machen. Es ist die konzeptionelle Grundlage von N-Tier-Architektur und SRP.</p>
+<p><strong>Setter</strong> → <em>Getter / Setter</em></p>
+<p><strong>SOLID.</strong> Ein Akronym für fünf Prinzipien des objektorientierten Softwareentwurfs: <strong>S</strong>ingle Responsibility, <strong>O</strong>pen/Closed, <strong>L</strong>iskov Substitution, <strong>I</strong>nterface Segregation, <strong>D</strong>ependency Inversion. Formuliert und popularisiert von Robert C. Martin Anfang der 2000er-Jahre.</p>
+<p><strong>SQL</strong> (<em>Structured Query Language</em>). Die Sprache zum Abfragen und Verändern relationaler Datenbanken. Grundbefehle: <code>SELECT</code> (lesen), <code>INSERT</code> (einfügen), <code>UPDATE</code> (ändern), <code>DELETE</code> (löschen).</p>
+<p><strong>SQL-Injection.</strong> Ein Angriff, bei dem schädliche SQL-Befehle über Eingabefelder eingeschleust werden. <code>PreparedStatement</code> mit Platzhaltern verhindert SQL-Injection, weil Eingabewerte nicht direkt in den SQL-Text eingebaut werden.</p>
+<p><strong>SRP</strong> (<em>Single Responsibility Principle</em> — Prinzip der einzigen Verantwortung). Das erste SOLID-Prinzip: Eine Klasse hat genau eine Aufgabe — und damit genau einen Grund, sich zu ändern. <code>ProductView</code> zeigt an, <code>ProductService</code> verarbeitet, <code>ProductDao</code> speichert.</p>
+<hr>
+<p><strong><code>TextFileProductDao</code>.</strong> Eine DAO-Implementierung, die Produkte als CSV-Textdatei auf dem Dateisystem speichert. Sie ist persistent — Daten bleiben nach dem Programmende erhalten —, aber nicht transaktionssicher.</p>
+<p><strong>Transaktionssicherheit</strong> (<em>Transaktionsintegrität</em>). Die Eigenschaft eines Datenbanksystems, sicherzustellen, dass Schreibvorgänge vollständig oder gar nicht ausgeführt werden. MariaDB ist transaktionssicher; <code>TextFileProductDao</code> ist es nicht.</p>
+<hr>
+<p><strong>Untertyp.</strong> Eine Klasse, die ein Interface implementiert oder eine andere Klasse erweitert. Im Kontext des LSP: Ein Untertyp muss überall verwendbar sein, wo der übergeordnete Typ erwartet wird — ohne das Programm zum Absturz zu bringen.</p>
+<hr>
+<p><strong>Vertrag.</strong> Die metaphorische Bezeichnung für ein Interface: Es legt fest, welche Methoden bereitgestellt werden müssen. Jede Klasse, die das Interface mit <code>implements</code> übernimmt, verpflichtet sich, alle Methoden korrekt zu implementieren.</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./A1_grundlagen.html" class="pagination-link" aria-label="Java-Grundlagen">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Java-Grundlagen</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./A3_quellen.html" class="pagination-link" aria-label="Quellen / Weiterführendes">
+        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quellen / Weiterführendes</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Appendix A — Java-Grundlagen – N-Tier, SOLID und DAO</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./A2_glossar.html" rel="next">
+<link href="./06_uebungen.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d9ea66fcd6c317012447f26e9c021348.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./A1_grundlagen.html">Appendices</a></li><li class="breadcrumb-item"><a href="./A1_grundlagen.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Java-Grundlagen</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">N-Tier, SOLID und DAO</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">N-Tier, SOLID und DAO</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_motivation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Warum Programme Struktur brauchen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_n-tier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">N-Tier-Architektur</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_solid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">SOLID-Prinzipien</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_dao-pattern.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Das DAO-Pattern</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_dao-varianten.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">DAO-Varianten im Detail</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_uebungen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Übungen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A1_grundlagen.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Java-Grundlagen</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A2_glossar.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossar</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A3_quellen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quellen / Weiterführendes</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-grundlagen-klassen" id="toc-sec-grundlagen-klassen" class="nav-link active" data-scroll-target="#sec-grundlagen-klassen"><span class="header-section-number">A.1</span> Klassen und Objekte</a></li>
+  <li><a href="#sec-grundlagen-attribute" id="toc-sec-grundlagen-attribute" class="nav-link" data-scroll-target="#sec-grundlagen-attribute"><span class="header-section-number">A.2</span> Attribute und Methoden</a></li>
+  <li><a href="#sec-grundlagen-konstruktor" id="toc-sec-grundlagen-konstruktor" class="nav-link" data-scroll-target="#sec-grundlagen-konstruktor"><span class="header-section-number">A.3</span> Konstruktoren</a></li>
+  <li><a href="#sec-grundlagen-sichtbarkeit" id="toc-sec-grundlagen-sichtbarkeit" class="nav-link" data-scroll-target="#sec-grundlagen-sichtbarkeit"><span class="header-section-number">A.4</span> Sichtbarkeit: private und public</a></li>
+  <li><a href="#sec-grundlagen-getter" id="toc-sec-grundlagen-getter" class="nav-link" data-scroll-target="#sec-grundlagen-getter"><span class="header-section-number">A.5</span> Getter und Setter</a></li>
+  <li><a href="#sec-grundlagen-interfaces" id="toc-sec-grundlagen-interfaces" class="nav-link" data-scroll-target="#sec-grundlagen-interfaces"><span class="header-section-number">A.6</span> Interfaces</a></li>
+  <li><a href="#sec-grundlagen-implements" id="toc-sec-grundlagen-implements" class="nav-link" data-scroll-target="#sec-grundlagen-implements"><span class="header-section-number">A.7</span> Interfaces implementieren</a></li>
+  <li><a href="#sec-grundlagen-interface-typ" id="toc-sec-grundlagen-interface-typ" class="nav-link" data-scroll-target="#sec-grundlagen-interface-typ"><span class="header-section-number">A.8</span> Interface als Variablentyp</a></li>
+  <li><a href="#sec-grundlagen-collections" id="toc-sec-grundlagen-collections" class="nav-link" data-scroll-target="#sec-grundlagen-collections"><span class="header-section-number">A.9</span> Collections: List und ArrayList</a></li>
+  <li><a href="#sec-grundlagen-packages" id="toc-sec-grundlagen-packages" class="nav-link" data-scroll-target="#sec-grundlagen-packages"><span class="header-section-number">A.10</span> Packages und Ordnerstruktur</a></li>
+  <li><a href="#sec-grundlagen-io-lesen" id="toc-sec-grundlagen-io-lesen" class="nav-link" data-scroll-target="#sec-grundlagen-io-lesen"><span class="header-section-number">A.11</span> Datei-I/O: Lesen</a></li>
+  <li><a href="#sec-grundlagen-io-schreiben" id="toc-sec-grundlagen-io-schreiben" class="nav-link" data-scroll-target="#sec-grundlagen-io-schreiben"><span class="header-section-number">A.12</span> Datei-I/O: Schreiben</a></li>
+  <li><a href="#sec-grundlagen-datenbank" id="toc-sec-grundlagen-datenbank" class="nav-link" data-scroll-target="#sec-grundlagen-datenbank"><span class="header-section-number">A.13</span> Datenbanken: Grundbegriffe</a></li>
+  <li><a href="#sec-grundlagen-tabelle" id="toc-sec-grundlagen-tabelle" class="nav-link" data-scroll-target="#sec-grundlagen-tabelle"><span class="header-section-number">A.14</span> Die Tabelle product in MariaDB</a></li>
+  <li><a href="#sec-grundlagen-jdbc" id="toc-sec-grundlagen-jdbc" class="nav-link" data-scroll-target="#sec-grundlagen-jdbc"><span class="header-section-number">A.15</span> JDBC: Grundidee</a></li>
+  <li><a href="#sec-grundlagen-zusammen" id="toc-sec-grundlagen-zusammen" class="nav-link" data-scroll-target="#sec-grundlagen-zusammen"><span class="header-section-number">A.16</span> Alles zusammen</a></li>
+  <li><a href="#sec-grundlagen-merksaetze" id="toc-sec-grundlagen-merksaetze" class="nav-link" data-scroll-target="#sec-grundlagen-merksaetze"><span class="header-section-number">A.17</span> Merksätze</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./A1_grundlagen.html">Appendices</a></li><li class="breadcrumb-item"><a href="./A1_grundlagen.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Java-Grundlagen</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Appendix A — Java-Grundlagen</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Lernziele">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Lernziele
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nach diesem Anhang kannst du …</p>
+<ul>
+<li>erklären, was eine Klasse ist und wie ein Objekt daraus entsteht.</li>
+<li>Attribute und Methoden einer Klasse benennen und unterscheiden.</li>
+<li>einen Konstruktor schreiben und erklären, wozu er dient.</li>
+<li>den Unterschied zwischen <code>private</code> und <code>public</code> beschreiben.</li>
+<li>Getter und Setter implementieren und ihren Zweck erklären.</li>
+<li>ein Interface definieren und von einer Implementierungsklasse unterscheiden.</li>
+<li>das Interface <code>ProductDao</code> als Beispiel für einen Vertrag zwischen Klassen erklären.</li>
+<li>eine <code>ArrayList</code> erstellen und mit einfachen Methoden nutzen.</li>
+<li>das Dateiformat <code>id;name;price</code> beschreiben und einfache I/O-Operationen benennen.</li>
+<li>die Begriffe SQL, JDBC und MariaDB erklären und ihren Zusammenhang beschreiben.</li>
+</ul>
+</div>
+</div>
+<p>Dieser Anhang wiederholt die Java-Grundlagen, die für die Kapitel über N-Tier, SOLID und DAO wichtig sind. Er eignet sich als Nachschlagewerk — beim Lesen der Hauptkapitel kannst du jederzeit hier nachsehen.</p>
+<div style="page-break-after: always;"></div>
+<section id="sec-grundlagen-klassen" class="level2" data-number="A.1">
+<h2 data-number="A.1" class="anchored" data-anchor-id="sec-grundlagen-klassen"><span class="header-section-number">A.1</span> Klassen und Objekte</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+    K["Klasse Product&lt;br/&gt;— Bauplan —&lt;br/&gt;id: int&lt;br/&gt;name: String&lt;br/&gt;price: double"]
+    O1["Objekt laptop&lt;br/&gt;id=1&lt;br/&gt;name=Laptop&lt;br/&gt;price=999.99"]
+    O2["Objekt maus&lt;br/&gt;id=2&lt;br/&gt;name=Maus&lt;br/&gt;price=19.99"]
+    K --&gt;|"new Product(...)"| O1
+    K --&gt;|"new Product(...)"| O2
+</pre>
+</div>
+<p></p><figcaption> Eine Klasse ist ein Bauplan. Ein Objekt ist eine konkrete Instanz.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Eine <strong>Klasse</strong> ist ein Bauplan für Objekte. Sie legt fest, welche Daten ein Objekt speichert und was es tun kann.</p>
+<p>Ein <strong>Objekt</strong> ist eine konkrete Instanz dieses Bauplans. Mehrere Objekte können nach derselben Klasse erstellt werden — jedes mit eigenen Werten.</p>
+<p>Das Alltagsbeispiel: Die Klasse ist die Bauzeichnung eines Hauses. Das Objekt ist das konkrete Haus, das nach dieser Zeichnung gebaut wurde.</p>
+<p>Im weiteren Verlauf verwenden wir durchgehend die Klasse <code>Product</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Product <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> id<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> price<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>Product</code> steht für ein Produkt in einem einfachen Warensystem. Die drei Attribute <code>id</code>, <code>name</code> und <code>price</code> beschreiben jeden Datensatz.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-attribute" class="level2" data-number="A.2">
+<h2 data-number="A.2" class="anchored" data-anchor-id="sec-grundlagen-attribute"><span class="header-section-number">A.2</span> Attribute und Methoden</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">classDiagram
+    class Product {
+        -int id
+        -String name
+        -double price
+        +printInfo() void
+    }
+</pre>
+</div>
+<p></p><figcaption> Eine Klasse besteht aus Attributen (Daten) und Methoden (Verhalten).</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Eine Klasse besteht aus zwei Arten von Elementen.</p>
+<p><strong>Attribute</strong> beschreiben den Zustand eines Objekts. Sie speichern die Daten. Beispiel: <code>id</code>, <code>name</code>, <code>price</code>.</p>
+<p><strong>Methoden</strong> beschreiben das Verhalten eines Objekts. Sie führen Aktionen aus oder geben Werte zurück.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Product <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Attribute</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> id<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> price<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Methode</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">printInfo</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>name <span class="op">+</span> <span class="st">": "</span> <span class="op">+</span> price<span class="op">);</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>printInfo()</code> gibt den Namen und den Preis des Produkts auf dem Bildschirm aus. Sie gehört zur Klasse <code>Product</code> und kann auf alle Attribute direkt zugreifen.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-konstruktor" class="level2" data-number="A.3">
+<h2 data-number="A.3" class="anchored" data-anchor-id="sec-grundlagen-konstruktor"><span class="header-section-number">A.3</span> Konstruktoren</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A["new Product(1, &amp;quot;Laptop&amp;quot;, 999.99)"]
+    B["Konstruktor wird aufgerufen"]
+    C["this.id = 1&lt;br/&gt;this.name = &amp;quot;Laptop&amp;quot;&lt;br/&gt;this.price = 999.99"]
+    D["Fertiges Objekt"]
+    A --&gt; B --&gt; C --&gt; D
+</pre>
+</div>
+<p></p><figcaption> Der Konstruktor setzt beim Erstellen eines Objekts die Startwerte.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Ein <strong>Konstruktor</strong> ist eine spezielle Methode. Er wird automatisch aufgerufen, wenn ein Objekt mit <code>new</code> erstellt wird. Seine Aufgabe: die Startwerte der Attribute setzen.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Product <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> id<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> price<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Product</span><span class="op">(</span><span class="dt">int</span> id<span class="op">,</span> <span class="bu">String</span> name<span class="op">,</span> <span class="dt">double</span> price<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">id</span>    <span class="op">=</span> id<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">name</span>  <span class="op">=</span> name<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">price</span> <span class="op">=</span> price<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>this.name = name</code> unterscheidet das Attribut der Klasse (<code>this.name</code>) vom Parameter des Konstruktors (<code>name</code>). Ohne <code>this</code> wäre unklar, welche Variable gemeint ist.</p>
+<p>Verwendung:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Product laptop <span class="op">=</span> <span class="kw">new</span> <span class="fu">Product</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="st">"Laptop"</span><span class="op">,</span> <span class="fl">999.99</span><span class="op">);</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Product maus   <span class="op">=</span> <span class="kw">new</span> <span class="fu">Product</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="st">"Maus"</span><span class="op">,</span>    <span class="fl">19.99</span><span class="op">);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>laptop</code> und <code>maus</code> sind zwei separate Objekte mit eigenen Werten.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-sichtbarkeit" class="level2" data-number="A.4">
+<h2 data-number="A.4" class="anchored" data-anchor-id="sec-grundlagen-sichtbarkeit"><span class="header-section-number">A.4</span> Sichtbarkeit: private und public</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {"theme": "neutral"}}%%
+graph LR
+    subgraph "Klasse Product"
+        A["private double price&lt;br/&gt;(nur intern)"]
+        B["public double getPrice()&lt;br/&gt;(von außen aufrufbar)"]
+        A --&gt;|"gibt zurück"| B
+    end
+    C["Anderer Code&lt;br/&gt;product.getPrice()"]
+    B --&gt; C
+</pre>
+</div>
+<p></p><figcaption> private: nur innerhalb der Klasse. public: von überall sichtbar.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Java regelt den Zugriff auf Klassen-Mitglieder mit Sichtbarkeits-Schlüsselwörtern.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Schlüsselwort</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>private</code></td>
+<td>Nur innerhalb der eigenen Klasse sichtbar</td>
+</tr>
+<tr class="even">
+<td><code>public</code></td>
+<td>Von überall sichtbar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Faustregel:</strong> Attribute sind <code>private</code>. Methoden sind meist <code>public</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Product <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> price<span class="op">;</span>    <span class="co">// nur intern zugänglich</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getPrice</span><span class="op">()</span> <span class="op">{</span>    <span class="co">// von außen aufrufbar</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> price<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>private</code> schützt den internen Zustand des Objekts vor unkontrolliertem Zugriff von außen. Das ist ein Kernprinzip der <strong>Kapselung</strong> — englisch <em>Encapsulation</em>.</p>
+<p>Andere Klassen können <code>price</code> nicht direkt lesen oder setzen. Sie müssen den kontrollierten Weg über <code>getPrice()</code> nehmen.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-getter" class="level2" data-number="A.5">
+<h2 data-number="A.5" class="anchored" data-anchor-id="sec-grundlagen-getter"><span class="header-section-number">A.5</span> Getter und Setter</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">classDiagram
+    class Product {
+        -String name
+        +getName() String
+        +setName(String name) void
+    }
+</pre>
+</div>
+<p></p><figcaption> Getter liest, Setter setzt — der kontrollierte Zugang zu privaten Attributen.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Da Attribute <code>private</code> sind, brauchen wir Methoden, um von außen auf sie zuzugreifen.</p>
+<p><strong>Getter</strong> geben den Wert eines Attributs zurück. <strong>Setter</strong> setzen einen neuen Wert.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Product <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Getter: Wert lesen</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getName</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> name<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Setter: Wert setzen</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setName</span><span class="op">(</span><span class="bu">String</span> name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">name</span> <span class="op">=</span> name<span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Getter und Setter sind der kontrollierte Zugangspunkt zu privaten Attributen. Das klingt nach Schreibarbeit — und das ist es auch. In der Praxis werden sie deshalb meist automatisch generiert. In IntelliJ IDEA: Alt+Einfg → <em>Getter and Setter</em>.</p>
+<p>Der eigentliche Vorteil: Ein Setter kann den neuen Wert prüfen, bevor er ihn übernimmt.</p>
+<p>Erweitertes Beispiel:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> Product <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">int</span> id<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">String</span> name<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="dt">double</span> price<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">Product</span><span class="op">(</span><span class="dt">int</span> id<span class="op">,</span> <span class="bu">String</span> name<span class="op">,</span> <span class="dt">double</span> price<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">id</span>    <span class="op">=</span> id<span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">name</span>  <span class="op">=</span> name<span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span><span class="op">.</span><span class="fu">price</span> <span class="op">=</span> price<span class="op">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">int</span>    <span class="fu">getId</span><span class="op">()</span>    <span class="op">{</span> <span class="cf">return</span> id<span class="op">;</span>    <span class="op">}</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">String</span> <span class="fu">getName</span><span class="op">()</span>  <span class="op">{</span> <span class="cf">return</span> name<span class="op">;</span>  <span class="op">}</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getPrice</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> price<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setName</span><span class="op">(</span><span class="bu">String</span> name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>name <span class="op">!=</span> <span class="kw">null</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>name<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">name</span> <span class="op">=</span> name<span class="op">;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setPrice</span><span class="op">(</span><span class="dt">double</span> price<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>price <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span><span class="op">.</span><span class="fu">price</span> <span class="op">=</span> price<span class="op">;</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>setName()</code> übernimmt den neuen Namen nur, wenn er nicht leer ist. <code>setPrice()</code> akzeptiert nur nicht-negative Preise. So bleibt das Objekt immer in einem gültigen Zustand.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-interfaces" class="level2" data-number="A.6">
+<h2 data-number="A.6" class="anchored" data-anchor-id="sec-grundlagen-interfaces"><span class="header-section-number">A.6</span> Interfaces</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="5" data-fig-height="4" data-out-width="75%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">classDiagram
+    class ProductDao {
+        &lt;&lt;interface&gt;&gt;
+        +findAll() List~Product~
+        +findById(int id) Product
+        +save(Product p) void
+        +deleteById(int id) void
+    }
+    class InMemoryProductDao {
+        +findAll() List~Product~
+        +findById(int id) Product
+        +save(Product p) void
+        +deleteById(int id) void
+    }
+    ProductDao &lt;|-- InMemoryProductDao
+</pre>
+</div>
+<p></p><figcaption> Ein Interface ist ein Vertrag. Die implementierende Klasse muss alle Methoden bereitstellen.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Ein <strong>Interface</strong> legt fest, welche Methoden eine Klasse bereitstellen muss — ohne zu sagen, wie sie das tut. Es ist ein Vertrag. Die implementierende Klasse unterschreibt diesen Vertrag: „Ich garantiere, dass ich diese Methoden habe.”</p>
+<p>Wie die Methoden intern funktionieren, ist Sache der Klasse — nicht des Interface.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">interface</span> ProductDao <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">();</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    Product <span class="fu">findById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">);</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">);</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">deleteById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">);</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Dieses Interface legt vier Methoden fest. Jede Klasse, die <code>ProductDao</code> implementiert, muss alle vier bereitstellen.</p>
+<p>Der Rest des Programms kann sich darauf verlassen — ohne zu wissen, wie die Methoden intern funktionieren. Das ist der Kern des DAO-Patterns (siehe <span class="quarto-unresolved-ref">?sec-dao-pattern</span>).</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-implements" class="level2" data-number="A.7">
+<h2 data-number="A.7" class="anchored" data-anchor-id="sec-grundlagen-implements"><span class="header-section-number">A.7</span> Interfaces implementieren</h2>
+<p>Das Schlüsselwort <code>implements</code> verbindet eine Klasse mit einem Interface.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> InMemoryProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> products<span class="op">;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        products<span class="op">.</span><span class="fu">add</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// findById und deleteById müssen ebenfalls implementiert werden</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>implements ProductDao</code> bedeutet: Diese Klasse verpflichtet sich, alle Methoden des Interface bereitzustellen.</p>
+<p><code>@Override</code> ist technisch optional, aber empfohlen. Es macht sichtbar, dass hier eine Interface-Methode implementiert wird. Wenn der Methodenname falsch geschrieben ist, meldet der Compiler sofort einen Fehler.</p>
+<p>Wenn eine Methode des Interface fehlt, gibt der Compiler einen Fehler. Das Interface erzwingt die Vollständigkeit — das ist sein Zweck.</p>
+<p>Erweitertes Beispiel — alle vier Methoden:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> InMemoryProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> products<span class="op">;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> Product <span class="fu">findById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>Product p <span class="op">:</span> products<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>p<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">==</span> id<span class="op">)</span> <span class="cf">return</span> p<span class="op">;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        products<span class="op">.</span><span class="fu">add</span><span class="op">(</span>product<span class="op">);</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">deleteById</span><span class="op">(</span><span class="dt">int</span> id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        products<span class="op">.</span><span class="fu">removeIf</span><span class="op">(</span>p <span class="op">-&gt;</span> p<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">==</span> id<span class="op">);</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-interface-typ" class="level2" data-number="A.8">
+<h2 data-number="A.8" class="anchored" data-anchor-id="sec-grundlagen-interface-typ"><span class="header-section-number">A.8</span> Interface als Variablentyp</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="5" data-fig-height="3" data-out-width="70%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+    V["ProductDao dao"]
+    A["InMemoryProductDao"]
+    B["TextFileProductDao"]
+    C["MariaDbProductDao"]
+    V --- A
+    V --- B
+    V --- C
+</pre>
+</div>
+<p></p><figcaption> Variable vom Typ ProductDao kann jede Implementierung halten.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Ein Interface kann als Typ für Variablen verwendet werden.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ProductDao dao <span class="op">=</span> <span class="kw">new</span> <span class="fu">InMemoryProductDao</span><span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Die Variable <code>dao</code> hat den Typ <code>ProductDao</code> — das Interface. Das Objekt dahinter ist ein <code>InMemoryProductDao</code>.</p>
+<p>Das ist der entscheidende Vorteil: Der Rest des Programms arbeitet mit dem Typ <code>ProductDao</code>, nicht mit <code>InMemoryProductDao</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Später einfach austauschen:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>ProductDao dao <span class="op">=</span> <span class="kw">new</span> <span class="fu">TextFileProductDao</span><span class="op">();</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Kein anderer Code muss geändert werden.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Das nennt man <strong>Polymorphismus</strong>: Eine Variable eines Interface-Typs kann jede beliebige Implementierung halten. Der aufrufende Code merkt davon nichts — er ruft immer dieselben Methoden auf.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-collections" class="level2" data-number="A.9">
+<h2 data-number="A.9" class="anchored" data-anchor-id="sec-grundlagen-collections"><span class="header-section-number">A.9</span> Collections: List und ArrayList</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">classDiagram
+    class List~E~ {
+        &lt;&lt;interface&gt;&gt;
+        +add(E e) boolean
+        +get(int index) E
+        +size() int
+        +remove(int index) E
+    }
+    class ArrayList~E~ {
+        +add(E e) boolean
+        +get(int index) E
+        +size() int
+        +remove(int index) E
+    }
+    List &lt;|-- ArrayList
+</pre>
+</div>
+<p></p><figcaption> List ist ein Interface. ArrayList ist die häufigste Implementierung.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p><code>List</code> ist ein Interface in Java für geordnete Listen. <code>ArrayList</code> ist die häufigste Implementierung — dynamisch wachsend, im Arbeitsspeicher.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Element hinzufügen</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>products<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Product</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="st">"Laptop"</span><span class="op">,</span> <span class="fl">999.99</span><span class="op">));</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Alle Elemente durchlaufen</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>Product p <span class="op">:</span> products<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>p<span class="op">.</span><span class="fu">getName</span><span class="op">());</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Anzahl der Elemente</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> anzahl <span class="op">=</span> products<span class="op">.</span><span class="fu">size</span><span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>List&lt;Product&gt;</code> bedeutet: eine Liste, die ausschließlich <code>Product</code>-Objekte enthält. Die spitzen Klammern sind <strong>Generics</strong> — sie legen den Typ der enthaltenen Elemente zur Compilezeit fest. Wenn du versehentlich ein <code>String</code>-Objekt in eine <code>List&lt;Product&gt;</code> einfügen willst, meldet der Compiler sofort einen Fehler.</p>
+<p>Erweitertes Beispiel — häufige Methoden:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>products<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Product</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="st">"Laptop"</span><span class="op">,</span> <span class="fl">999.99</span><span class="op">));</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>products<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Product</span><span class="op">(</span><span class="dv">2</span><span class="op">,</span> <span class="st">"Maus"</span><span class="op">,</span>    <span class="fl">19.99</span><span class="op">));</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>products<span class="op">.</span><span class="fu">add</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Product</span><span class="op">(</span><span class="dv">3</span><span class="op">,</span> <span class="st">"Kabel"</span><span class="op">,</span>    <span class="fl">4.99</span><span class="op">));</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Größe prüfen</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Anzahl: "</span> <span class="op">+</span> products<span class="op">.</span><span class="fu">size</span><span class="op">());</span>  <span class="co">// 3</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Element per Index lesen</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>Product erstes <span class="op">=</span> products<span class="op">.</span><span class="fu">get</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span>   <span class="co">// Laptop</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">// Element entfernen (mit Lambda)</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>products<span class="op">.</span><span class="fu">removeIf</span><span class="op">(</span>p <span class="op">-&gt;</span> p<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">==</span> <span class="dv">2</span><span class="op">);</span>  <span class="co">// Maus entfernen</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">// Prüfen ob leer</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>products<span class="op">.</span><span class="fu">isEmpty</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Keine Produkte vorhanden."</span><span class="op">);</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-packages" class="level2" data-number="A.10">
+<h2 data-number="A.10" class="anchored" data-anchor-id="sec-grundlagen-packages"><span class="header-section-number">A.10</span> Packages und Ordnerstruktur</h2>
+<p><strong>Packages</strong> organisieren Klassen in Gruppen — ähnlich wie Ordner im Dateisystem. Klassen mit verwandten Aufgaben kommen in dasselbe Package.</p>
+<pre><code>src/
+  main/
+    java/
+      dao/
+        ProductDao.java
+        InMemoryProductDao.java
+        TextFileProductDao.java
+        MariaDbProductDao.java
+      model/
+        Product.java
+      service/
+        ProductService.java
+      view/
+        ProductView.java</code></pre>
+<p>Package-Namen entsprechen den Ordnernamen. <code>InMemoryProductDao.java</code> liegt im Ordner <code>dao/</code> — das Package heißt entsprechend <code>dao</code>.</p>
+<p>In den Codebeispielen dieses Begleithefts werden <code>package</code>-Zeilen weggelassen, um die Übersichtlichkeit zu wahren. Im realen Projekt stehen sie am Anfang jeder Datei:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span><span class="im"> dao</span><span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> InMemoryProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ...</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-io-lesen" class="level2" data-number="A.11">
+<h2 data-number="A.11" class="anchored" data-anchor-id="sec-grundlagen-io-lesen"><span class="header-section-number">A.11</span> Datei-I/O: Lesen</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A["products.txt öffnen"]
+    B["Zeile lesen"]
+    C["line.split(;)"]
+    D["new Product(id, name, price)"]
+    E["products.add(p)"]
+    A --&gt; B --&gt; C --&gt; D --&gt; E --&gt; B
+</pre>
+</div>
+<p></p><figcaption> Ablauf beim Lesen einer Textdatei: Datei öffnen → zeilenweise lesen → aufteilen → Objekt erzeugen.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Java kann Textdateien lesen und schreiben. Die Klassen <code>BufferedReader</code> und <code>FileReader</code> aus dem Paket <code>java.io</code> sind die Standard-Werkzeuge.</p>
+<p>Das Dateiformat in diesem Projekt:</p>
+<pre><code>1;Laptop;999.99
+2;Maus;19.99
+3;Kabel;4.99</code></pre>
+<p>Jede Zeile enthält einen Datensatz. Die drei Felder <code>id</code>, <code>name</code> und <code>price</code> sind durch Semikolon getrennt.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">BufferedReader</span> reader <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedReader</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileReader</span><span class="op">(</span><span class="st">"products.txt"</span><span class="op">));</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">String</span> line<span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">((</span>line <span class="op">=</span> reader<span class="op">.</span><span class="fu">readLine</span><span class="op">())</span> <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span><span class="op">[]</span> parts <span class="op">=</span> line<span class="op">.</span><span class="fu">split</span><span class="op">(</span><span class="st">";"</span><span class="op">);</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span>    id    <span class="op">=</span> <span class="bu">Integer</span><span class="op">.</span><span class="fu">parseInt</span><span class="op">(</span>parts<span class="op">[</span><span class="dv">0</span><span class="op">]);</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> name  <span class="op">=</span> parts<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> price <span class="op">=</span> <span class="bu">Double</span><span class="op">.</span><span class="fu">parseDouble</span><span class="op">(</span>parts<span class="op">[</span><span class="dv">2</span><span class="op">]);</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Product-Objekt erzeugen und zur Liste hinzufügen</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>reader<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>split(";")</code> zerlegt eine Zeile an jedem Semikolon. Das Ergebnis ist ein Array: <code>parts[0]</code> enthält <code>id</code>, <code>parts[1]</code> enthält <code>name</code>, <code>parts[2]</code> enthält <code>price</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Hinweis">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Fehlerbehandlung (<code>try-catch</code>, <code>IOException</code>) ist in diesem Beispiel weggelassen. Im realen Code muss sie ergänzt werden.</p>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-io-schreiben" class="level2" data-number="A.12">
+<h2 data-number="A.12" class="anchored" data-anchor-id="sec-grundlagen-io-schreiben"><span class="header-section-number">A.12</span> Datei-I/O: Schreiben</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="4" data-fig-height="3" data-out-width="60%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A["products.txt öffnen&lt;br/&gt;(FileWriter)"]
+    B["for each Product"]
+    C["writer.write(id+;+name+;+price)"]
+    D["writer.newLine()"]
+    E["writer.close()"]
+    A --&gt; B --&gt; C --&gt; D --&gt; B
+    B --&gt;|"alle Produkte"| E
+</pre>
+</div>
+<p></p><figcaption> Ablauf beim Schreiben: Datei öffnen → für jedes Produkt eine Zeile schreiben → schließen.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Zum Schreiben verwenden wir <code>BufferedWriter</code> und <code>FileWriter</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">BufferedWriter</span> writer <span class="op">=</span> <span class="kw">new</span> <span class="bu">BufferedWriter</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileWriter</span><span class="op">(</span><span class="st">"products.txt"</span><span class="op">));</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>Product p <span class="op">:</span> products<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span>p<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">+</span> <span class="st">";"</span> <span class="op">+</span> p<span class="op">.</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">";"</span> <span class="op">+</span> p<span class="op">.</span><span class="fu">getPrice</span><span class="op">());</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    writer<span class="op">.</span><span class="fu">newLine</span><span class="op">();</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>writer<span class="op">.</span><span class="fu">close</span><span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>FileWriter</code> öffnet die Datei zum Schreiben. <code>newLine()</code> fügt nach jeder Zeile einen Zeilenumbruch ein.</p>
+<p><code>writer.close()</code> am Ende ist wichtig. Ohne <code>close()</code> werden die Daten möglicherweise nicht vollständig in die Datei geschrieben, weil sie noch im Puffer liegen.</p>
+<p>Erweitertes Beispiel mit Fehlerbehandlung:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span> <span class="op">(</span><span class="bu">BufferedWriter</span> writer <span class="op">=</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>         <span class="kw">new</span> <span class="bu">BufferedWriter</span><span class="op">(</span><span class="kw">new</span> <span class="bu">FileWriter</span><span class="op">(</span><span class="st">"products.txt"</span><span class="op">)))</span> <span class="op">{</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>Product p <span class="op">:</span> products<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        writer<span class="op">.</span><span class="fu">write</span><span class="op">(</span>p<span class="op">.</span><span class="fu">getId</span><span class="op">()</span> <span class="op">+</span> <span class="st">";"</span> <span class="op">+</span> p<span class="op">.</span><span class="fu">getName</span><span class="op">()</span> <span class="op">+</span> <span class="st">";"</span> <span class="op">+</span> p<span class="op">.</span><span class="fu">getPrice</span><span class="op">());</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        writer<span class="op">.</span><span class="fu">newLine</span><span class="op">();</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">catch</span> <span class="op">(</span><span class="bu">IOException</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">err</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">"Fehler beim Schreiben: "</span> <span class="op">+</span> e<span class="op">.</span><span class="fu">getMessage</span><span class="op">());</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Das <code>try-with-resources</code>-Konstrukt schließt den Writer automatisch — auch wenn ein Fehler auftritt.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-datenbank" class="level2" data-number="A.13">
+<h2 data-number="A.13" class="anchored" data-anchor-id="sec-grundlagen-datenbank"><span class="header-section-number">A.13</span> Datenbanken: Grundbegriffe</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="5" data-fig-height="3" data-out-width="70%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+    A["Java-Programm&lt;br/&gt;ProductDao"]
+    B["JDBC&lt;br/&gt;java.sql.*"]
+    C["MariaDB&lt;br/&gt;Datenbank"]
+    D["MariaDB Connector/J&lt;br/&gt;(JAR-Datei)"]
+    A --&gt;|"API-Aufrufe"| B
+    B --&gt;|"treiberspezifisch"| D
+    D --&gt;|"Netzwerk"| C
+</pre>
+</div>
+<p></p><figcaption> Zusammenhang zwischen Java, JDBC und MariaDB.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Datenbanken speichern Daten dauerhaft und strukturiert. Drei Begriffe sind für dieses Begleitheft wichtig.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Begriff</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Tabelle</strong></td>
+<td>Struktur zum Speichern gleichartiger Daten — ähnlich wie eine Tabellenkalkulation</td>
+</tr>
+<tr class="even">
+<td><strong>Zeile</strong></td>
+<td>Ein einzelner Datensatz, z. B. ein Produkt</td>
+</tr>
+<tr class="odd">
+<td><strong>Spalte</strong></td>
+<td>Ein Datenfeld, z. B. <code>name</code> oder <code>price</code></td>
+</tr>
+<tr class="even">
+<td><strong>SQL</strong></td>
+<td><em>Structured Query Language</em> — die Sprache für Datenbankabfragen</td>
+</tr>
+<tr class="odd">
+<td><strong>JDBC</strong></td>
+<td><em>Java Database Connectivity</em> — die Standard-API, über die Java mit Datenbanken kommuniziert</td>
+</tr>
+<tr class="even">
+<td><strong>MariaDB</strong></td>
+<td>Ein relationales Datenbanksystem — Open Source, kompatibel mit MySQL</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Relationale Datenbank</strong> bedeutet: Daten werden in Tabellen gespeichert. Tabellen können über gemeinsame Felder verknüpft werden.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-tabelle" class="level2" data-number="A.14">
+<h2 data-number="A.14" class="anchored" data-anchor-id="sec-grundlagen-tabelle"><span class="header-section-number">A.14</span> Die Tabelle product in MariaDB</h2>
+<p>In MariaDB wird die Tabelle <code>product</code> so angelegt:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> product (</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">id</span>    <span class="dt">INT</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span> AUTO_INCREMENT,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    name  <span class="dt">VARCHAR</span>(<span class="dv">100</span>),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    price <span class="dt">DOUBLE</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>AUTO_INCREMENT</code> bedeutet: MariaDB vergibt die <code>id</code> automatisch. <code>PRIMARY KEY</code> bedeutet: Jede Zeile hat eine eindeutige <code>id</code>. <code>VARCHAR(100)</code> ist eine Zeichenkette mit maximal 100 Zeichen.</p>
+<p>Einfache SQL-Abfragen:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Alle Produkte lesen</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">id</span>, name, price <span class="kw">FROM</span> product;</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Neues Produkt einfügen</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> product (name, price) <span class="kw">VALUES</span> (<span class="st">'Laptop'</span>, <span class="fl">999.99</span>);</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Produkt mit id=2 löschen</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> product <span class="kw">WHERE</span> <span class="kw">id</span> <span class="op">=</span> <span class="dv">2</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Jede SQL-Abfrage hat eine feste Struktur: <code>SELECT</code> liest Daten, <code>INSERT</code> fügt Daten ein, <code>DELETE</code> löscht Daten.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-jdbc" class="level2" data-number="A.15">
+<h2 data-number="A.15" class="anchored" data-anchor-id="sec-grundlagen-jdbc"><span class="header-section-number">A.15</span> JDBC: Grundidee</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="5" data-fig-height="4" data-out-width="75%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant J as Java-Code
+    participant C as Connection
+    participant S as PreparedStatement
+    participant R as ResultSet
+    J-&gt;&gt;C: DriverManager.getConnection(...)
+    J-&gt;&gt;S: con.prepareStatement(sql)
+    J-&gt;&gt;R: stmt.executeQuery()
+    loop jede Zeile
+        J-&gt;&gt;R: rs.next()
+        R--&gt;&gt;J: id, name, price
+    end
+</pre>
+</div>
+<p></p><figcaption> JDBC-Ablauf: Verbindung öffnen → Statement erstellen → Abfrage ausführen → Ergebnis lesen.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>JDBC (<em>Java Database Connectivity</em>) ist die Standard-Schnittstelle, über die Java-Programme mit Datenbanken kommunizieren.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Verbindung öffnen</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Connection</span> con <span class="op">=</span> <span class="bu">DriverManager</span><span class="op">.</span><span class="fu">getConnection</span><span class="op">(</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"jdbc:mariadb://localhost:3306/meinedb"</span><span class="op">,</span> <span class="st">"user"</span><span class="op">,</span> <span class="st">"passwort"</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Abfrage vorbereiten und ausführen</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="bu">PreparedStatement</span> stmt <span class="op">=</span> con<span class="op">.</span><span class="fu">prepareStatement</span><span class="op">(</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SELECT id, name, price FROM product"</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="bu">ResultSet</span> rs <span class="op">=</span> stmt<span class="op">.</span><span class="fu">executeQuery</span><span class="op">();</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Ergebnis zeilenweise lesen</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>rs<span class="op">.</span><span class="fu">next</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span>    id    <span class="op">=</span> rs<span class="op">.</span><span class="fu">getInt</span><span class="op">(</span><span class="st">"id"</span><span class="op">);</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">String</span> name  <span class="op">=</span> rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"name"</span><span class="op">);</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> price <span class="op">=</span> rs<span class="op">.</span><span class="fu">getDouble</span><span class="op">(</span><span class="st">"price"</span><span class="op">);</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Product-Objekt erzeugen ...</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Voraussetzung:</strong> Der MariaDB Connector/J muss als JAR-Datei im Projekt eingebunden sein. JDBC ist Teil von Java — der Connector ist die Brücke zu MariaDB. Ohne diese JAR-Datei kann Java nicht mit MariaDB kommunizieren.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Hinweis">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dieses Beispiel ist bewusst vereinfacht — Fehlerbehandlung und <code>close()</code>-Aufrufe fehlen. Im realen Code müssen sie ergänzt werden.</p>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-zusammen" class="level2" data-number="A.16">
+<h2 data-number="A.16" class="anchored" data-anchor-id="sec-grundlagen-zusammen"><span class="header-section-number">A.16</span> Alles zusammen</h2>
+<div class="cell" data-devicescalefactor="2" data-fig-width="6" data-fig-height="5" data-out-width="80%" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">classDiagram
+    class ProductDao {
+        &lt;&lt;interface&gt;&gt;
+        +findAll() List~Product~
+        +save(Product p) void
+    }
+    class InMemoryProductDao {
+        -List~Product~ products
+        +findAll() List~Product~
+        +save(Product p) void
+    }
+    class ProductService {
+        -ProductDao dao
+        +ProductService(ProductDao dao)
+        +getAll() List~Product~
+    }
+    class Product {
+        -int id
+        -String name
+        -double price
+        +getId() int
+        +getName() String
+        +getPrice() double
+    }
+    ProductDao &lt;|-- InMemoryProductDao
+    ProductService --&gt; ProductDao
+    InMemoryProductDao --&gt; Product
+</pre>
+</div>
+<p></p><figcaption> Interface, Liste und DAO — alle Konzepte in einem Überblick.</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
+<p>Alle Konzepte aus diesem Anhang greifen ineinander.</p>
+<p>Das Interface <code>ProductDao</code> legt den Vertrag fest. <code>InMemoryProductDao</code> implementiert diesen Vertrag. Es speichert <code>Product</code>-Objekte in einer <code>ArrayList</code>.</p>
+<p><code>ProductService</code> hängt vom Interface ab — nicht von der Implementierung. Damit bleibt <code>ProductService</code> unverändert, wenn die Implementierung wechselt.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Interface definiert den Vertrag</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">interface</span> ProductDao <span class="op">{</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">();</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">);</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Implementierung erfüllt den Vertrag</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> InMemoryProductDao <span class="kw">implements</span> ProductDao <span class="op">{</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> products <span class="op">=</span> <span class="kw">new</span> <span class="bu">ArrayList</span><span class="op">&lt;&gt;();</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">findAll</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> products<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Override</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">save</span><span class="op">(</span>Product product<span class="op">)</span> <span class="op">{</span> products<span class="op">.</span><span class="fu">add</span><span class="op">(</span>product<span class="op">);</span> <span class="op">}</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">// Service hängt vom Interface ab — nicht von der Implementierung</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> ProductService <span class="op">{</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> ProductDao dao<span class="op">;</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="fu">ProductService</span><span class="op">(</span>ProductDao dao<span class="op">)</span> <span class="op">{</span> <span class="kw">this</span><span class="op">.</span><span class="fu">dao</span> <span class="op">=</span> dao<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> <span class="fu">getAll</span><span class="op">()</span> <span class="op">{</span> <span class="cf">return</span> dao<span class="op">.</span><span class="fu">findAll</span><span class="op">();</span> <span class="op">}</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Verwendung:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ProductDao dao       <span class="op">=</span> <span class="kw">new</span> <span class="fu">InMemoryProductDao</span><span class="op">();</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>ProductService svc   <span class="op">=</span> <span class="kw">new</span> <span class="fu">ProductService</span><span class="op">(</span>dao<span class="op">);</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="bu">List</span><span class="op">&lt;</span>Product<span class="op">&gt;</span> liste  <span class="op">=</span> svc<span class="op">.</span><span class="fu">getAll</span><span class="op">();</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Wird später eine andere DAO-Variante benötigt, ändert sich nur die erste Zeile. <code>ProductService</code> und alle anderen Klassen bleiben unberührt.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-grundlagen-merksaetze" class="level2" data-number="A.17">
+<h2 data-number="A.17" class="anchored" data-anchor-id="sec-grundlagen-merksaetze"><span class="header-section-number">A.17</span> Merksätze</h2>
+<blockquote class="blockquote">
+<p><strong>Klasse und Objekt:</strong> Eine Klasse ist ein Bauplan. Ein Objekt ist eine konkrete Instanz dieses Bauplans.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>private / public:</strong> Attribute sind <code>private</code>. Methoden regeln den kontrollierten Zugang.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Konstruktor:</strong> Der Konstruktor setzt beim Erstellen eines Objekts die Startwerte der Attribute.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Interface:</strong> Ein Interface ist ein Vertrag. Wer ihn mit <code>implements</code> übernimmt, muss alle Methoden bereitstellen.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Polymorphismus:</strong> Eine Variable vom Typ eines Interface kann jede beliebige Implementierung halten.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>List / ArrayList:</strong> <code>List&lt;Product&gt;</code> ist eine typsichere Liste von <code>Product</code>-Objekten. <code>ArrayList</code> ist die einfachste Implementierung.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>JDBC:</strong> Java kommuniziert über JDBC mit Datenbanken. Der MariaDB Connector/J ist die Bibliothek, die das für MariaDB ermöglicht.</p>
+</blockquote>
+<hr>
+<p><em>Quellen: Oracle Java Dokumentation (Java SE 21) — <a href="https://docs.oracle.com/en/java/javase/21/" class="uri">https://docs.oracle.com/en/java/javase/21/</a>; dev.java — Aktuelle Java-Lernpfade — <a href="https://dev.java/learn/" class="uri">https://dev.java/learn/</a>; Oracle Java Tutorials (Archiv) — <a href="https://docs.oracle.com/javase/tutorial/" class="uri">https://docs.oracle.com/javase/tutorial/</a>; Oracle Java Tutorials — Interfaces — <a href="https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html" class="uri">https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html</a>; Oracle Java Tutorials — Collections — <a href="https://docs.oracle.com/javase/tutorial/collections/index.html" class="uri">https://docs.oracle.com/javase/tutorial/collections/index.html</a>; Oracle Java Tutorials — File I/O — <a href="https://docs.oracle.com/javase/tutorial/essential/io/index.html" class="uri">https://docs.oracle.com/javase/tutorial/essential/io/index.html</a>; Oracle Java Tutorials — JDBC — <a href="https://docs.oracle.com/javase/tutorial/jdbc/index.html" class="uri">https://docs.oracle.com/javase/tutorial/jdbc/index.html</a>; MariaDB Connector/J — <a href="https://mariadb.com/kb/en/mariadb-connector-j/" class="uri">https://mariadb.com/kb/en/mariadb-connector-j/</a>.</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./06_uebungen.html" class="pagination-link" aria-label="Übungen">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Übungen</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./A2_glossar.html" class="pagination-link" aria-label="Glossar">
+        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossar</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
