@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Tempel der SOLID-Prinzipien</title>
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: #2a1f12;
+    color: #f5e6c8;
+}
+
+#game {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 24px;
+    background: #120f09;
+    border: 4px solid #d4a017;
+    box-sizing: border-box;
+}
+
+h1 {
+    margin: 0 0 10px 0;
+    color: #ffd76a;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    margin: 0 0 22px 0;
+    color: #d9c28c;
+}
+
+.panel {
+    border: 2px solid #7b5a22;
+    background: #21170c;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+#story {
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0;
+}
+
+#question {
+    font-size: 1.18em;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.answer {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    font-size: 1em;
+    text-align: left;
+    color: #fff4cf;
+    background: #5a3f17;
+    border: 2px solid #c89b2d;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+.answer:hover {
+    background: #76531f;
+}
+
+.answer:focus {
+    outline: 3px solid #ffd76a;
+}
+
+#feedback {
+    min-height: 1.5em;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.ok {
+    color: #9cff9c;
+}
+
+.bad {
+    color: #ff9c9c;
+}
+
+#progress {
+    text-align: right;
+    color: #d9c28c;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#score {
+    color: #ffd76a;
+    font-weight: bold;
+}
+
+#debug {
+    display: none;
+    margin-top: 16px;
+    padding: 10px;
+    background: #330000;
+    color: #ffd0d0;
+    border: 1px solid #ff7777;
+    font-family: Consolas, monospace;
+    white-space: pre-wrap;
+}
+
+#restart {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 16px;
+    font-size: 1em;
+    color: #fff4cf;
+    background: #3d5a1f;
+    border: 2px solid #9ccc65;
+    cursor: pointer;
+}
+
+#license {
+    max-width: 900px;
+    margin: 0 auto 32px auto;
+    padding: 10px 24px;
+    font-size: 0.82em;
+    color: #a08060;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+#license a {
+    color: #c9a24d;
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+    <h1>Tempel der SOLID-Prinzipien</h1>
+    <p class="subtitle">Ein OOP-Wiederholungsspiel im Abenteuer-Archäologie-Stil</p>
+
+    <div class="panel">
+        <p id="story">
+            Du betrittst einen alten Tempel. Eine massive Steintür blockiert den Weg.
+            Eine Inschrift spricht von Verantwortung im Code.
+        </p>
+    </div>
+
+    <div class="panel">
+        <div id="question">
+            Was besagt das Single Responsibility Principle?
+        </div>
+
+        <button class="answer" id="a0" onclick="answerQuestion(0)">Eine Klasse darf nur eine einzige Methode haben.</button>
+        <button class="answer" id="a1" onclick="answerQuestion(1)">Eine Klasse sollte nur einen Grund zur Änderung haben.</button>
+        <button class="answer" id="a2" onclick="answerQuestion(2)">Eine Klasse darf nur einmal instanziert werden.</button>
+        <button class="answer" id="a3" onclick="answerQuestion(3)">Eine Klasse muss genau eine andere Klasse kennen.</button>
+    </div>
+
+    <div class="panel">
+        <div id="feedback">Wähle eine Antwort, um die Tempeltür zu öffnen.</div>
+        <div id="progress">Raum 1 von 10 | Punkte: <span id="score">0</span></div>
+        <button id="restart" onclick="restartGame()">Noch einmal spielen</button>
+    </div>
+
+    <div id="debug"></div>
+
+    <noscript>
+        <div class="panel">
+            JavaScript ist deaktiviert. Für das Spiel muss JavaScript aktiviert sein.
+        </div>
+    </noscript>
+</div>
+
+<div id="license">
+    Dieses Werk ist lizenziert unter
+    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">
+        Creative Commons Namensnennung 4.0 International (CC BY 4.0)
+    </a>.<br>
+    Erstellt mit Unterstützung von Microsoft Copilot (GPT-4o) und Claude (Anthropic) &mdash; 2025/2026.
+</div>
+
+<script>
+window.onerror = function (message, source, lineno, colno, error) {
+    var debug = document.getElementById("debug");
+    if (debug) {
+        debug.style.display = "block";
+        debug.innerHTML = "JavaScript-Fehler:\n" +
+            message + "\nZeile: " + lineno + ", Spalte: " + colno;
+    }
+    return false;
+};
+
+var stages = [
+    {
+        story: "Du betrittst einen alten Tempel. Eine massive Steintür blockiert den Weg. Eine Inschrift spricht von Verantwortung im Code.",
+        question: "Was besagt das Single Responsibility Principle?",
+        answers: [
+            "Eine Klasse darf nur eine einzige Methode haben.",
+            "Eine Klasse sollte nur einen Grund zur Änderung haben.",
+            "Eine Klasse darf nur einmal instanziert werden.",
+            "Eine Klasse muss genau eine andere Klasse kennen."
+        ],
+        correct: 1,
+        principle: "SRP",
+        explain: "SRP bedeutet: Eine Klasse sollte genau einen fachlichen Grund haben, sich zu ändern."
+    },
+    {
+        story: "Ein Gang voller Fallen liegt vor dir. Der Mechanismus erlaubt Erweiterungen, aber keine riskanten Umbauten.",
+        question: "Was beschreibt das Open/Closed Principle?",
+        answers: [
+            "Softwareelemente sollen offen für Erweiterung, aber geschlossen für Änderung sein.",
+            "Alle Klassen müssen public sein.",
+            "Code darf nach der ersten Version nie mehr geändert werden.",
+            "Nur abstrakte Klassen dürfen erweitert werden."
+        ],
+        correct: 0,
+        principle: "OCP",
+        explain: "OCP bedeutet: Neues Verhalten soll möglichst durch Erweiterung ergänzt werden, ohne stabilen bestehenden Code ständig umzubauen."
+    },
+    {
+        story: "Eine alte Steinbrücke trägt nur dann, wenn jedes Ersatzteil dieselben Zusagen erfüllt wie das Original.",
+        question: "Was fordert das Liskov Substitution Principle?",
+        answers: [
+            "Unterklassen dürfen keine Methoden überschreiben.",
+            "Objekte einer Unterklasse müssen anstelle der Basisklasse verwendbar sein.",
+            "Vererbung soll immer vermieden werden.",
+            "Jede Klasse muss mindestens eine Unterklasse haben."
+        ],
+        correct: 1,
+        principle: "LSP",
+        explain: "LSP bedeutet: Eine Unterklasse darf die Erwartungen an die Basisklasse nicht verletzen."
+    },
+    {
+        story: "An einer Wand befinden sich viel zu viele Hebel. Einige lösen Fallen aus, obwohl sie für deine Aufgabe unnötig sind.",
+        question: "Was besagt das Interface Segregation Principle?",
+        answers: [
+            "Eine Klasse darf nur ein Interface implementieren.",
+            "Interfaces dürfen keine Methoden enthalten.",
+            "Viele kleine, passende Interfaces sind besser als ein großes, aufgeblähtes Interface.",
+            "Interfaces sind in objektorientierter Programmierung verboten."
+        ],
+        correct: 2,
+        principle: "ISP",
+        explain: "ISP bedeutet: Klassen sollen nicht von Methoden abhängen, die sie gar nicht brauchen."
+    },
+    {
+        story: "Das Artefakt hängt an Seilen. Direkte Kopplung an den falschen Mechanismus könnte alles zum Einsturz bringen.",
+        question: "Was ist die Kernidee des Dependency Inversion Principle?",
+        answers: [
+            "High-Level-Module sollen direkt von Low-Level-Modulen abhängen.",
+            "Abhängigkeiten sind grundsätzlich verboten.",
+            "Module sollen von Abstraktionen abhängen, nicht von konkreten Implementierungen.",
+            "Nur konkrete Klassen dürfen verwendet werden."
+        ],
+        correct: 2,
+        principle: "DIP",
+        explain: "DIP bedeutet: Wichtige Logik sollte von Schnittstellen oder Abstraktionen abhängen, nicht direkt von konkreten Detailklassen."
+    },
+    {
+        story: "Du findest eine Klasse namens ReportManager. Sie lädt Daten, berechnet Summen, erzeugt PDFs und sendet E-Mails.",
+        question: "Welches SOLID-Prinzip wird hier am deutlichsten verletzt?",
+        answers: [
+            "Single Responsibility Principle",
+            "Liskov Substitution Principle",
+            "Dependency Inversion Principle",
+            "Interface Segregation Principle"
+        ],
+        correct: 0,
+        principle: "SRP",
+        explain: "Die Klasse hat zu viele Verantwortlichkeiten: Datenzugriff, Berechnung, PDF-Erzeugung und Versand."
+    },
+    {
+        story: "Ein neues Zahlungsmodul soll ergänzt werden. Bisher muss bei jeder neuen Zahlungsart eine lange if-else-Kette geändert werden.",
+        question: "Welches Prinzip hilft hier am besten?",
+        answers: [
+            "Open/Closed Principle",
+            "Single Responsibility Principle",
+            "Interface Segregation Principle",
+            "Liskov Substitution Principle"
+        ],
+        correct: 0,
+        principle: "OCP",
+        explain: "Neue Zahlungsarten sollten ergänzt werden können, ohne die zentrale Verarbeitungslogik ständig zu ändern."
+    },
+    {
+        story: "Eine Klasse Bird hat eine Methode fly(). Eine Unterklasse Penguin kann aber nicht fliegen und wirft bei fly() eine Exception.",
+        question: "Welches Prinzip wird dadurch wahrscheinlich verletzt?",
+        answers: [
+            "Dependency Inversion Principle",
+            "Interface Segregation Principle",
+            "Liskov Substitution Principle",
+            "Open/Closed Principle"
+        ],
+        correct: 2,
+        principle: "LSP",
+        explain: "Wenn ein Penguin dort eingesetzt wird, wo ein Bird erwartet wird, darf erwartetes Verhalten nicht plötzlich kaputtgehen."
+    },
+    {
+        story: "Ein Interface Machine verlangt print(), scan(), fax() und staple(). Ein einfacher Drucker kann aber nur print().",
+        question: "Welches Prinzip ist hier relevant?",
+        answers: [
+            "Interface Segregation Principle",
+            "Single Responsibility Principle",
+            "Open/Closed Principle",
+            "Dependency Inversion Principle"
+        ],
+        correct: 0,
+        principle: "ISP",
+        explain: "Der einfache Drucker sollte nicht gezwungen sein, Methoden zu implementieren, die er nicht sinnvoll anbieten kann."
+    },
+    {
+        story: "Am Ende des Tempels findest du einen Controller, der direkt new MySqlUserRepository() erzeugt.",
+        question: "Welche Verbesserung passt am besten zum Dependency Inversion Principle?",
+        answers: [
+            "Den Controller größer machen.",
+            "Den Controller direkt von einer konkreten Datenbankklasse abhängig lassen.",
+            "Ein UserRepository-Interface verwenden und die konkrete Implementierung von außen übergeben.",
+            "Alle Datenbankzugriffe in statische Methoden verschieben."
+        ],
+        correct: 2,
+        principle: "DIP",
+        explain: "Der Controller sollte gegen eine Abstraktion programmiert werden. Die konkrete Datenbankimplementierung wird dann austauschbar."
+    }
+];
+
+var current = 0;
+var score = 0;
+var locked = false;
+
+function setText(id, text) {
+    var element = document.getElementById(id);
+    if (element) {
+        if (typeof element.textContent !== "undefined") {
+            element.textContent = text;
+        } else {
+            element.innerText = text;
+        }
+    }
+}
+
+function setHtml(id, html) {
+    var element = document.getElementById(id);
+    if (element) {
+        element.innerHTML = html;
+    }
+}
+
+function renderStage() {
+    var stage;
+    var i;
+    var button;
+
+    locked = false;
+
+    if (current >= stages.length) {
+        endGame();
+        return;
+    }
+
+    stage = stages[current];
+
+    setText("story", stage.story);
+    setText("question", stage.question);
+
+    for (i = 0; i < 4; i++) {
+        button = document.getElementById("a" + i);
+        if (button) {
+            button.disabled = false;
+            button.style.backgroundColor = "#5a3f17";
+            button.style.borderColor = "#c89b2d";
+            setText("a" + i, stage.answers[i]);
+        }
+    }
+
+    setText("feedback", "Wähle eine Antwort, um weiterzukommen.");
+    setHtml("progress", "Raum " + (current + 1) + " von " + stages.length + " | Punkte: <span id=\"score\">" + score + "</span>");
+
+    var restart = document.getElementById("restart");
+    if (restart) {
+        restart.style.display = "none";
+    }
+}
+
+function answerQuestion(index) {
+    var stage;
+    var button;
+    var correctButton;
+    var i;
+
+    if (locked) {
+        return;
+    }
+
+    stage = stages[current];
+
+    if (!stage) {
+        return;
+    }
+
+    locked = true;
+
+    for (i = 0; i < 4; i++) {
+        button = document.getElementById("a" + i);
+        if (button) {
+            button.disabled = true;
+        }
+    }
+
+    correctButton = document.getElementById("a" + stage.correct);
+    if (correctButton) {
+        correctButton.style.backgroundColor = "#2f5f2f";
+        correctButton.style.borderColor = "#9cff9c";
+    }
+
+    if (index === stage.correct) {
+        score++;
+        setHtml("feedback", "<span class=\"ok\">Richtig.</span> " + stage.principle + ": " + stage.explain);
+    } else {
+        button = document.getElementById("a" + index);
+        if (button) {
+            button.style.backgroundColor = "#6b1f1f";
+            button.style.borderColor = "#ff9c9c";
+        }
+        setHtml("feedback", "<span class=\"bad\">Falsch.</span> Richtig wäre: " + stage.principle + ". " + stage.explain);
+    }
+
+    window.setTimeout(function () {
+        current++;
+        renderStage();
+    }, 2600);
+}
+
+function endGame() {
+    var percent;
+    var title;
+    var message;
+    var restart;
+
+    percent = Math.round((score / stages.length) * 100);
+
+    if (percent >= 80) {
+        title = "Artefakt gesichert";
+        message = "Sehr gut. Die SOLID-Prinzipien sind stabil verankert.";
+    } else if (percent >= 50) {
+        title = "Tempel teilweise gemeistert";
+        message = "Grundlagen sind vorhanden. Einzelne Prinzipien sollten noch wiederholt werden.";
+    } else {
+        title = "Der Tempel bleibt gefährlich";
+        message = "Die SOLID-Prinzipien sollten nochmals anhand von Codebeispielen geübt werden.";
+    }
+
+    setText("story", "Das Abenteuer endet in der Schatzkammer des Tempels.");
+    setText("question", title);
+
+    setText("a0", "Ergebnis: " + score + " von " + stages.length + " Punkten (" + percent + "%)");
+    setText("a1", message);
+    setText("a2", "Merksatz: SOLID hilft, Code wartbarer, erweiterbarer und testbarer zu machen.");
+    setText("a3", "Tipp: Suche im nächsten Projekt je ein Beispiel für SRP, OCP, LSP, ISP und DIP.");
+
+    for (var i = 0; i < 4; i++) {
+        var button = document.getElementById("a" + i);
+        if (button) {
+            button.disabled = true;
+            button.style.backgroundColor = "#3b2b14";
+            button.style.borderColor = "#7b5a22";
+        }
+    }
+
+    setText("feedback", "Spiel beendet.");
+    setHtml("progress", "Endstand | Punkte: <span id=\"score\">" + score + "</span>");
+
+    restart = document.getElementById("restart");
+    if (restart) {
+        restart.style.display = "inline-block";
+    }
+}
+
+function restartGame() {
+    current = 0;
+    score = 0;
+    renderStage();
+}
+
+renderStage();
+</script>
+
+</body>
+</html>
